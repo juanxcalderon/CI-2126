@@ -5,13 +5,13 @@ import re
 
 @check50.check()
 def exists():
-    """import.py, roster.py exist"""
+    """import.py y roster.py existen"""
     check50.exists("import.py", "roster.py")
     check50.include("students.db", "students.csv")
 
 @check50.check(exists)
 def import1():
-    """import.py correctly imports Harry Potter"""
+    """import.py importa correctamente Harry Potter"""
     check50.run("python3 import.py students.csv").exit(timeout=10)
     db = SQL("sqlite:///students.db")
     rows = db.execute("SELECT first, middle, last, house, birth FROM students WHERE first = 'Harry'")
@@ -21,7 +21,7 @@ def import1():
 
 @check50.check(exists)
 def import2():
-    """import.py correctly imports Luna Lovegood"""
+    """import.py importa correctamente Luna Lovegood"""
     check50.run("python3 import.py students.csv").exit(timeout=10)
     db = SQL("sqlite:///students.db")
     rows = db.execute("SELECT first, middle, last, house, birth FROM students WHERE first = 'Luna'")
@@ -31,7 +31,7 @@ def import2():
 
 @check50.check(exists)
 def import_count():
-    """import.py imports the correct number of rows"""
+    """import.py importa el número correcto de filas"""
     check50.run("python3 import.py students.csv").exit(timeout=10)
     db = SQL("sqlite:///students.db")
     actual = db.execute("SELECT COUNT(*) as count FROM students")[0]["count"]
@@ -41,7 +41,7 @@ def import_count():
 
 @check50.check(import_count)
 def roster_hufflepuff():
-    """roster.py produces correct Hufflepuff roster"""
+    """roster.py genera correctamente la nómina de Hufflepuff"""
     check50.include("hufflepuff.txt", "hufflepuff_re.txt")
     actual = check50.run("python3 roster.py Hufflepuff").stdout(timeout=10)
     if not re.search(open("hufflepuff_re.txt").read(), actual):
@@ -49,7 +49,7 @@ def roster_hufflepuff():
 
 @check50.check(import_count)
 def roster_gryffindor():
-    """roster.py produces correct Gryffindor roster"""
+    """roster.py genera correctamente la nómina de Gryffindor"""
     check50.include("gryffindor.txt", "gryffindor_re.txt")
     actual = check50.run("python3 roster.py Gryffindor").stdout(timeout=10)
     if not re.search(open("gryffindor_re.txt").read(), actual):
