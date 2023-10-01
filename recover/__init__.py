@@ -56,46 +56,46 @@ HASHES = [
 
 @check50.check()
 def exists():
-    """recover.c exists."""
+    """recover.c existe."""
     check50.include("card.raw")
     check50.exists("recover.c")
 
 @check50.check(exists)
 def compiles():
-    """recover.c compiles."""
+    """recover.c compila."""
     check50.c.compile("recover.c", lcs50=True)
 
 @check50.check(compiles)
 def test_noimage():
-    """handles lack of forensic image"""
+    """maneja la falta de imagen forense"""
     check50.run("./recover").exit(1)
 
 @check50.check(compiles)
 def first_image():
-    """recovers 000.jpg correctly"""
+    """recupera 000.jpg correctamente"""
     check50.run("./recover card.raw").exit(0, timeout=10)
     if check50.hash("000.jpg") != HASHES[0]:
-        raise check50.Failure("recovered image does not match")
+        raise check50.Failure("la imagen recuperada no coincide")
 
 @check50.check(compiles)
 def middle_images():
-    """recovers middle images correctly"""
+    """recupera las imágenes del medio correctamente"""
     check50.run("./recover card.raw").exit(0, timeout=10)
     for i, hash in enumerate(HASHES[1:-1], 1):
         if hash != check50.hash("{:03d}.jpg".format(i)):
-            raise check50.Failure("recovered image does not match")
+            raise check50.Failure("la imagen recuperada no coincide")
 
 @check50.check(compiles)
 def last_image():
-    """recovers 049.jpg correctly"""
+    """recupera 049.jpg correctamente"""
     check50.run("./recover card.raw").exit(0, timeout=10)
     if check50.hash("049.jpg") != HASHES[-1]:
-        raise check50.Failure("recovered image does not match")
+        raise check50.Failure("la imagen recuperada no coincide")
   
 @check50.check(last_image)
 def memory():
-    """program is free of memory errors"""
+    """El programa está libre de errores de memoria."""
     code = check50.c.valgrind("./recover card.raw").exit(timeout=10)
     if code != 0:
-        raise check50.Failure("valgrind returned a segfault")
+        raise check50.Failure("valgrind devolvió un error de segmentación")
 
