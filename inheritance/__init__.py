@@ -4,18 +4,18 @@ import re
 
 @check50.check()
 def exists():
-    """inheritance.c exists"""
+    """inheritance.c existe"""
     check50.exists("inheritance.c")
     check50.include("testing.c")
 
 @check50.check(exists)
 def compiles():
-    """inheritance.c compiles"""
+    """inheritance.c compila"""
     check50.c.compile("inheritance.c", lcs50=True)
 
 @check50.check(exists)
 def compiles():
-    """inheritance compiles"""
+    """inheritance compila"""
     check50.c.compile("inheritance.c", lcs50=True)
     inheritance = re.sub("int\s+main", "int distro_main", open("inheritance.c").read())
     testing = open("testing.c").read()
@@ -27,26 +27,26 @@ def compiles():
 
 @check50.check(compiles)
 def correct_size():
-    """create_family creates correct size of family"""
+    """create_family calcula el tamaño correcto de family"""
     check50.run("./inheritance_test").stdout("size_true.*").exit(0)
 
 
 @check50.check(compiles)
 def inheritance_rules_1():
-    """create_family follows inheritance rules 1"""
+    """create_family sigue las reglas de herencia 1"""
     check50.run("./inheritance_test").stdout(".*allele_true.*").exit(0)
 
 @check50.check(compiles)
 def inheritance_rules_2():
-    """create_family follows inheritance rules 2"""
+    """create_family sigue las reglas de herencia 2"""
     check50.run("./inheritance_test").stdout(".*allele_true.*").exit(0)
 
 @check50.check(compiles)
 def inheritance_rules_3():
-    """create_family follows inheritance rules 3"""
+    """create_family sigue las reglas de herencia 3"""
     check50.run("./inheritance_test").stdout(".*allele_true.*").exit(0)
 
 @check50.check(compiles)
 def frees_memory():
-    """free_family results in no memory leakages"""
+    """free_family no produce pérdidas de memoria"""
     check50.c.valgrind("./inheritance").exit(0)
