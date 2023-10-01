@@ -42,8 +42,8 @@ BRACKET16 = [
     {"team": "England", "rating": 1040},
 ]
 QUESTIONS = [
-    "Which predictions, if any, proved incorrect as you increased the number of simulations?",
-    'Suppose you\'re charged a fee for each second of compute time your program uses.\nAfter how many simulations would you call the predictions "good enough"?',
+    "¿Qué predicciones, si las hubo, resultaron incorrectas a medida que aumentaste el número de simulaciones?",
+    'Supongamos que le cobran una tarifa por cada segundo de tiempo de cálculo que utiliza su programa.\n¿Después de cuántas simulaciones consideraría que las predicciones son "suficientemente buenas"?',
 ]
 SIMULATION_RUNS = [
     "10",
@@ -57,87 +57,87 @@ SIMULATION_RUNS = [
 
 @check50.check()
 def exists():
-    """tournament.py exists"""
+    """tournament.py existe"""
     check50.exists("tournament.py", "answers.txt")
     check50.include("2018m.csv", "2019w.csv")
 
 
 @check50.check(exists)
 def imports():
-    """tournament.py imports"""
+    """tournament.py importa"""
     check50.py.import_("tournament.py")
 
 
 @check50.check(imports)
 def sim_tournament_2():
-    """simulate_tournament handles a bracket of size 2"""
+    """simulate_tournament maneja un grupo de tamaño 2"""
     check_tournament(BRACKET2)
 
 
 @check50.check(imports)
 def sim_tournament_4():
-    """simulate_tournament handles a bracket of size 4"""
+    """simulate_tournament maneja un grupo de tamaño 4"""
     check_tournament(BRACKET4)
 
 
 @check50.check(imports)
 def sim_tournament_8():
-    """simulate_tournament handles a bracket of size 8"""
+    """simulate_tournament maneja un grupo de tamaño 8"""
     check_tournament(BRACKET8)
 
 
 @check50.check(imports)
 def sim_tournament_16():
-    """simulate_tournament handles a bracket of size 16"""
+    """simulate_tournament maneja un grupo de tamaño 16"""
     check_tournament(BRACKET16)
 
 
 @check50.check(imports)
 def counts():
-    """correctly keeps track of wins"""
+    """realiza un seguimiento correcto de partidos ganados"""
     actual = check50.run("python3 tournament.py 2018m.csv").stdout()
     percents = re.findall("[0-9]*\.[0-9]", actual)
     percents = [float(x) for x in percents]
     if sum(percents) < 99 or sum(percents) > 101:
-        raise check50.Failure("fails to keep track of wins")
+        raise check50.Failure("falla en hacer seguimiento de partidos ganados")
 
 
 @check50.check(imports)
 def correct_teams1():
-    """correctly reports team information for Men's World Cup"""
+    """reporta correctamente la información del equipo para la Copa Mundial Masculina"""
     actual = check50.run("python3 tournament.py 2018m.csv").stdout()
     expected = ["Belgium", "Brazil", "Portugal", "Spain"]
     not_expected = ["Germany"]
     for team in expected:
         if team not in actual:
-            raise check50.Failure(f"did not find team {team}")
+            raise check50.Failure(f"no encontró el equipo de {team}")
     for team in not_expected:
         if team in actual:
-            raise check50.Failure(f"incorrectly found team {team}")
+            raise check50.Failure(f"equipo {team} encontrado incorrectamente")
 
 
 @check50.check(imports)
 def correct_teams2():
-    """correctly reports team information for Women's World Cup"""
+    """reporta correctamente la información del equipo para la Copa Mundial Femenina"""
     actual = check50.run("python3 tournament.py 2019w.csv").stdout()
     expected = ["Germany", "United States", "England"]
     not_expected = ["Belgium"]
     for team in expected:
         if team not in actual:
-            raise check50.Failure(f"did not find team {team}")
+            raise check50.Failure(f"no encontró el equipo de {team}")
     for team in not_expected:
         if team in actual:
-            raise check50.Failure(f"incorrectly found team {team}")
+            raise check50.Failure(f"equipo {team} encontrado incorrectamente")
 
     percents = re.findall("[0-9]*\.[0-9]", actual)
     percents = [float(x) for x in percents]
     if sum(percents) < 99 or sum(percents) > 101:
-        raise check50.Failure("fails to keep track of wins")
+        raise check50.Failure("falla en hacer seguimiento de partidos ganados")
 
 
 @check50.check(imports)
 def check_answers():
-    """answers.txt is complete"""
+    """answers.txt está completo"""
     with open("answers.txt") as f:
         contents = f.read()
 
@@ -149,8 +149,8 @@ def check_answers():
             )
             if not match:
                 raise check50.Failure(
-                    "answers.txt does not include timings for each number of simulation runs",
-                    help="Did you put all of your answers in 0m0.000s format?",
+                    "answers.txt no incluye tiempos para cada número de ejecuciones de simulación",
+                    help="¿Pusiste todas tus respuestas en formato 0m0.000s?",
                 )
 
         # Check free response
@@ -174,8 +174,8 @@ def check_answers():
             match = re.search(regex, contents)
             if not match:
                 raise check50.Failure(
-                    "answers.txt does not include answers to free response questions",
-                    help="Did you write a sufficient response to each question?",
+                    "answers.txt no incluye respuestas a preguntas de respuesta libre",
+                    help="¿Escribiste una respuesta suficiente a cada pregunta?",
                 )
 
 
@@ -190,7 +190,7 @@ def check_round(*args):
         expected = [args[0][2 * i], args[0][2 * i + 1]]
         if not (actual[i] in expected):
             raise check50.Failure(
-                "simulate_round fails to determine winners in a round"
+                "simulate_round no logra determinar los ganadores en una ronda"
             )
 
 
@@ -201,5 +201,5 @@ def check_tournament(*args):
 
     if not actual in teams:
         raise check50.Failure(
-            "simulate_tournament fails to return the name of 1 winning team"
+            "simulate_tournament no devuelve el nombre de 1 equipo ganador"
         )
