@@ -10,7 +10,7 @@ os.environ["API_KEY"] = "foo"
 
 @check50.check()
 def exists():
-    """app.py exists"""
+    """app.py existe"""
     check50.exists("app.py")
     check50.include("lookup.py")
     check50.py.append_code("helpers.py", "lookup.py")
@@ -18,45 +18,45 @@ def exists():
 
 @check50.check(exists)
 def startup():
-    """application starts up"""
+    """la aplicación se inicia"""
     Finance().get("/").status(200)
 
 
 @check50.check(startup)
 def register_page():
-    """register page has all required elements"""
+    """La página de registro tiene todos los elementos requeridos."""
     Finance().validate_form("/register", ["username", "password", "confirmation"])
 
 
 @check50.check(register_page)
 def simple_register():
-    """registering user succeeds"""
+    """registro de usuario exitoso"""
     Finance().register("_cs50", "ohHai28!", "ohHai28!").status(200)
 
 
 @check50.check(register_page)
 def register_empty_field_fails():
-    """registration with an empty field fails"""
+    """el registro con un campo vacío falla"""
     for user in [("", "crimson", "crimson"), ("jharvard", "crimson", ""), ("jharvard", "", "")]:
         Finance().register(*user).status(400)
 
 
 @check50.check(register_page)
 def register_password_mismatch_fails():
-    """registration with password mismatch fails"""
+    """registro con contraseña no coincidente falla"""
     Finance().register("check50user1", "thisiscs50", "crimson").status(400)
 
 
 @check50.check(register_page)
 def register_reject_duplicate_username():
-    """registration rejects duplicate username"""
+    """el registro rechaza nombre de usuario duplicado"""
     user = ["elfie", "Doggo28!", "Doggo28!"]
     Finance().register(*user).status(200).register(*user).status(400)
 
 
 @check50.check(startup)
 def login_page():
-    """login page has all required elements"""
+    """La página de inicio de sesión tiene todos los elementos requeridos."""
     if Finance().page_exists("/signin"):
         Finance().validate_form("/signin", ["username", "password"])
         return
@@ -65,31 +65,31 @@ def login_page():
 
 @check50.check(simple_register)
 def can_login():
-    """logging in as registered user succceeds"""
+    """iniciar sesión como usuario registrado tiene éxito"""
     Finance().login("_cs50", "ohHai28!").status(200).get("/", follow_redirects=False).status(200)
 
 
 @check50.check(can_login)
 def quote_page():
-    """quote page has all required elements"""
+    """La página de cotización tiene todos los elementos requeridos."""
     Finance().login("_cs50", "ohHai28!").validate_form("/quote", "symbol")
 
 
 @check50.check(quote_page)
 def quote_handles_invalid():
-    """quote handles invalid ticker symbol"""
+    """la cotización maneja el símbolo de cotización no válido"""
     Finance().login("_cs50", "ohHai28!").quote("ZZZ").status(400)
 
 
 @check50.check(quote_page)
 def quote_handles_blank():
-    """quote handles blank ticker symbol"""
+    """la cotización maneja el símbolo de cotización en blanco"""
     Finance().login("_cs50", "ohHai28!").quote("").status(400)
 
 
 @check50.check(quote_page)
 def quote_handles_valid():
-    """quote handles valid ticker symbol"""
+    """la cotización maneja el símbolo de cotización válido"""
     (Finance().login("_cs50", "ohHai28!")
               .quote("AAAA")
               .status(200)
@@ -98,19 +98,19 @@ def quote_handles_valid():
 
 @check50.check(can_login)
 def buy_page():
-    """buy page has all required elements"""
+    """la página de compra tiene todos los elementos requeridos"""
     Finance().login("_cs50", "ohHai28!").validate_form("/buy", ["shares", "symbol"])
 
 
 @check50.check(buy_page)
 def buy_handles_invalid():
-    """buy handles invalid ticker symbol"""
+    """comprar maneja el símbolo de cotización no válido"""
     Finance().login("_cs50", "ohHai28!").transaction("/buy", "ZZZZ", "2").status(400)
 
 
 @check50.check(buy_page)
 def buy_handles_incorrect_shares():
-    """buy handles fractional, negative, and non-numeric shares"""
+    """comprar maneja acciones fraccionarias, negativas y no-numéricas"""
     (Finance().login("_cs50", "ohHai28!")
               .transaction("/buy", "AAAA", "-1").status(400)
               .transaction("/buy", "AAAA", "1.5").status(400)
@@ -119,7 +119,7 @@ def buy_handles_incorrect_shares():
 
 @check50.check(buy_page)
 def buy_handles_valid():
-    """buy handles valid purchase"""
+    """comprar maneja compra valida"""
     (Finance().login("_cs50", "ohHai28!")
               .transaction("/buy", "AAAA", "4")
               .content(r"112\.00", "112.00")
@@ -128,7 +128,7 @@ def buy_handles_valid():
 
 @check50.check(buy_handles_valid)
 def sell_page():
-    """sell page has all required elements"""
+    """la página de venta tiene todos los elementos requeridos"""
     (Finance().login("_cs50", "ohHai28!")
               .validate_form("/sell", ["shares"])
               .validate_form("/sell", ["symbol"], field_tag="select"))
@@ -136,13 +136,13 @@ def sell_page():
 
 @check50.check(buy_handles_valid)
 def sell_handles_invalid():
-    """sell handles invalid number of shares"""
+    """vender maneja un número no válido de acciones"""
     Finance().login("_cs50", "ohHai28!").transaction("/sell", "AAAA", "8").status(400)
 
 
 @check50.check(buy_handles_valid)
 def sell_handles_valid():
-    """sell handles valid sale"""
+    """vender maneja venta válida"""
     (Finance().login("_cs50", "ohHai28!")
               .transaction("/sell", "AAAA", "2")
               .content(r"56\.00", "56.00")
@@ -151,36 +151,36 @@ def sell_handles_valid():
 
 
 class Finance(check50.flask.app):
-    """Extension of flask.App class that adds Finance-specific functions"""
+    """Extensión de la clase flask.App que agrega funciones específicas de Finanzas"""
 
     APP_NAME = "app.py"
 
     def __init__(self):
-        """Helper function for registering user"""
+        """función auxiliar para registrar usuarios"""
         super().__init__(self.APP_NAME)
 
     def register(self, username, password, confirmation):
-        """Register new user"""
+        """registrar nuevo usuario"""
         form = {"username": username, "password": password, "confirmation": confirmation}
         return self.post("/register", data=form)
 
     def login(self, username, password):
-        """Helper function for logging in"""
+        """función auxiliar para iniciar sesión"""
         route = "/login"
         if self.page_exists("/signin"):
             route = "/signin"
         return self.post(route, data={"username": username, "password": password})
 
     def quote(self, ticker):
-        """Query app for a quote for `ticker`"""
+        """Consultar aplicación para obtener una cotización para 'ticker'"""
         return self.post("/quote", data={"symbol": ticker})
 
     def transaction(self, route, symbol, shares):
-        """Send request to `route` ("/buy" or "/sell") to perform the relevant transaction"""
+        """Enviar solicitud a 'route' ('/buy' o '/sell') para realizar la transacción relevante"""
         return self.post(route, data={"symbol": symbol, "shares": shares})
 
     def validate_form(self, route, fields, field_tag="input"):
-        """Make sure HTML form at `route` has input fields given by `fields`"""
+        """Asegúrese de que el formulario HTML en 'route' tenga campos de entrada proporcionados por 'fields'"""
         if not isinstance(fields, list):
             fields = [fields]
 
@@ -190,11 +190,11 @@ class Finance(check50.flask.app):
             try:
                 name = tag.attrs["name"]
                 if required[name]:
-                    raise Error("found more than one field called \"{}\"".format(name))
+                    raise Error("se encontró más de un campo llamado \"{}\"".format(name))
             except KeyError:
                 pass
             else:
-                check50.log("found required \"{}\" field".format(name))
+                check50.log("se encontró campo \"{}\" requerido".format(name))
                 required[name] = True
 
         try:
@@ -202,10 +202,10 @@ class Finance(check50.flask.app):
         except StopIteration:
             pass
         else:
-            raise check50.Failure(f"expected to find {field_tag} field with name \"{missing}\", but none found")
+            raise check50.Failure(f"se esperó encontrar el campo {field_tag} con el nombre \"{missing}\", pero no fue hallado")
 
         if content.find("button", type="submit") is None:
-            raise check50.Failure("expected button to submit form, but none was found")
+            raise check50.Failure("se esperó encontrar el botón para enviar formulario (submit form), pero no fue hallado")
 
         return self
 
