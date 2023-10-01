@@ -5,7 +5,7 @@ import re
 
 @check50.check()
 def exists():
-    """wordle.c exists"""
+    """wordle.c existe"""
     check50.exists("wordle.c")
     check50.include("testing.c")
     check50.include("5.txt")
@@ -13,7 +13,7 @@ def exists():
 
 @check50.check(exists)
 def compiles():
-    """wordle.c compiles"""
+    """wordle.c compila"""
 
     # Check if student code compiles
     check50.c.compile("wordle.c", lcs50=True)
@@ -35,74 +35,74 @@ def compiles():
 
 @check50.check(compiles)
 def multiple_argv():
-    """wordle rejects multiple command-line arguments"""
+    """wordle rechaza múltiples argumentos de la línea de comandos"""
     check50.c.run("./wordle 5 5").exit(1)
 
 
 @check50.check(compiles)
 def zero_argv():
-    """wordle rejects 0 command-line arguments"""
+    """wordle rechaza 0 argumentos de línea de comando"""
     check50.c.run("./wordle").exit(1)
 
 
 @check50.check(compiles)
 def reject_input():
-    """wordle rejects inputs that are not 5, 6, 7, or 8"""
+    """wordle rechaza entradas que no sean 5, 6, 7 u 8"""
     for i in [3, 4, 9]:
         check50.c.run(f"./wordle {i}").exit(1)
 
 
 @check50.check(compiles)
 def reject_length():
-    """wordle rejects guesses that are not of appropriate length"""
+    """wordle rechaza las conjeturas que no tienen la longitud adecuada"""
     for word in ["cs50", "wordle", "please"]:
         check50.c.run("./wordle_test get_guess").stdin(word).stdout("Input a 5-letter word:")
 
 
 @check50.check(compiles)
 def accept_length():
-    """wordle accepts guesses of appropriate length"""
+    """wordle acepta conjeturas de longitud adecuada"""
     for word in ["audio", "video", "cable"]:
         check50.c.run("./wordle_test get_guess").stdin(word).stdout(word)
 
 
 @check50.check(compiles)
 def incorrect_guess():
-    """wordle recognizes guess with no matches"""
+    """wordle reconoce conjeturas sin coincidencias"""
     for word in ["movie", "poker", "child"]:
         check50.c.run(f"./wordle_test check_word staff {word}").stdout(0)
 
 
 @check50.check(compiles)
 def partial_match_close():
-    """wordle recognizes guess with close match"""
+    """wordle reconoce conjeturas con coincidencia cercana"""
     for word in ["smile", "bison", "links"]:
         check50.c.run(f"./wordle_test check_word crash {word}").stdout(1)
 
 
 @check50.check(compiles)
 def partial_match_exact():
-    """wordle recognizes guess with exact match"""
+    """wordle reconoce conjeturas con coincidencia exacta"""
     for word in ["squid", "claim", "fluke"]:
         check50.c.run(f"./wordle_test check_word stare {word}").stdout(2)
 
 
 @check50.check(compiles)
 def partial_match_exact_and_close():
-    """wordle recognizes guess with exact and close matches"""
+    """wordle reconoce conjeturas con coincidencias exactas y cercanas"""
     for word in ["agent", "burst", "canoe"]:
         check50.c.run(f"./wordle_test check_word arise {word}").stdout(3)
 
         
 @check50.check(compiles)
 def partial_multiple_matches():
-    """wordle recognizes guess with multiple matches"""
+    """wordle reconoce conjeturas con múltiples coincidencias"""
     for word in ["drops", "ghost", "ports"]:
         check50.c.run(f"./wordle_test check_word sport {word}").stdout(5)
 
 
 @check50.check(compiles)
 def exact_match():
-    """wordle recognizes correct guess"""
+    """wordle reconoce la conjetura correcta"""
     for word in ["gnome", "sized", "world"]:
         check50.c.run(f"./wordle_test check_word {word} {word}").stdout(10)
