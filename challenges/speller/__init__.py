@@ -22,18 +22,18 @@ class Memory:
 
 @check50.check()
 def exists():
-    """dictionary.c exists"""
+    """dictionary.c existe"""
     check50.exists("dictionary.c")
     check50.include("Makefile", "speller.c", "dictionaries", "texts", "sols", "dictionary.h")
 
 @check50.check(exists)
 def compiles():
-    """speller compiles"""
+    """speller compila"""
     check50.run("make").exit(0)
 
 @check50.check(compiles, timeout=120)
 def qualifies():
-    """qualifies for Big Board"""
+    """califica para Big Board"""
     try:
         # inject canary
         canary = str(uuid.uuid4())
@@ -47,7 +47,7 @@ def qualifies():
 
         # check for canary
         if canary != actual[-1]:
-            raise check50.Failure("Your Makefile doesn't seem to have compiled speller.c")
+            raise check50.Failure("Su Makefile parece no haber compilado speller.c")
         del actual[-1]
 
         # Compare output line for line.
@@ -63,7 +63,7 @@ def qualifies():
 
 @check50.check(qualifies)
 def benchmark():
-    """passes benchmarking"""
+    """pasa la evaluación comparativa"""
 
     time = Time()
 
@@ -73,9 +73,9 @@ def benchmark():
             load, check, size, unload = map(float, out.split())
         except ValueError:
             check50.log(out)
-            raise check50.Failure("program has unexpected output or runtime error",
-                                  help="If your hash function is causing an integer overflow error, "
-                                       "try removing -fsanitize=integer from CFLAGS in your Makefile!")
+            raise check50.Failure("El programa tiene una salida inesperada o un error en tiempo de ejecución.",
+                                  help="Si su función hash está provocando un error de desbordamiento de enteros, "
+                                       "intente eliminar -fsanitize=integer de CFLAGS en su Makefile")
         time.load += load
         time.check += check
         time.size += size
