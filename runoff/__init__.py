@@ -5,14 +5,14 @@ import re
 
 @check50.check()
 def exists():
-    """runoff.c exists"""
+    """runoff.c existe"""
     check50.exists("runoff.c")
     check50.include("testing.c")
 
 
 @check50.check(exists)
 def compiles():
-    """runoff compiles"""
+    """runoff compila"""
     check50.c.compile("runoff.c", lcs50=True)
     runoff = re.sub("int\s+main", "int distro_main", open("runoff.c").read())
     testing = open("testing.c").read()
@@ -23,139 +23,139 @@ def compiles():
     check50.c.compile("runoff_test.c", lcs50=True)
 
 @check50.check(compiles)
-@check50.hidden("vote function did not return true")
+@check50.hidden("la función de voto no devolvió verdadero")
 def vote_returns_true():
-    """vote returns true when given name of candidate"""
+    """voto devuelve verdadero cuando se da el nombre del candidato"""
     check50.run("./runoff_test 0 0").stdout("true").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("vote function did not return false")
+@check50.hidden("la función de voto no devolvió falso")
 def vote_returns_false():
-    """vote returns false when given name of invalid candidate"""
+    """voto devuelve falso cuando se da el nombre de un candidato no válido"""
     check50.run("./runoff_test 0 1").stdout("false").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("vote function did not correctly set preferences")
+@check50.hidden("la función de voto no estableció correctamente las preferencias")
 def vote_sets_preference1():
-    """vote correctly sets first preference for first voter"""
+    """voto establece correctamente la primera preferencia para el primer votante"""
     check50.run("./runoff_test 0 2").stdout("2").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("vote function did not correctly set preferences")
+@check50.hidden("la función de voto no estableció correctamente las preferencias")
 def vote_sets_preference2():
-    """vote correctly sets third preference for second voter"""
+    """voto establece correctamente la tercera preferencia por el segundo votante"""
     check50.run("./runoff_test 0 3").stdout("0").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("vote function did not correctly set preferences")
+@check50.hidden("la función de voto no estableció correctamente las preferencias")
 def vote_sets_all_preferences():
-    """vote correctly sets all preferences for voter"""
+    """voto establece correctamente todas las preferencias para el votante"""
     check50.run("./runoff_test 0 4").stdout("1 0 2").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("tabulate function did not produce correct vote totals")
+@check50.hidden("la función de tabulación no produjo totales de votos correctos")
 def tabulate1():
-    """tabulate counts votes when all candidates remain in election"""
+    """tabular cuenta los votos cuando todos los candidatos permanecen en la elección"""
     check50.run("./runoff_test 1 5").stdout("3 3 1 0 ").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("tabulate function did not produce correct vote totals")
+@check50.hidden("la función de tabulación no produjo totales de votos correctos")
 def tabulate2():
-    """tabulate counts votes when one candidate is eliminated"""
+    """tabular cuenta los votos cuando un candidato es eliminado"""
     check50.run("./runoff_test 1 6").stdout("3 3 1 0 ").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("tabulate function did not produce correct vote totals")
+@check50.hidden("la función de tabulación no produjo totales de votos correctos")
 def tabulate3():
-    """tabulate counts votes when multiple candidates are eliminated"""
+    """tabular cuenta votos cuando se eliminan varios candidatos"""
     check50.run("./runoff_test 1 7").stdout("3 4 0 0 ").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("tabulate function did not produce correct vote totals")
+@check50.hidden("la función de tabulación no produjo totales de votos correctos")
 def tabulate4():
-    """tabulate handles multiple rounds of preferences"""
+    """tabular maneja múltiples rondas de preferencias"""
     check50.run("./runoff_test 1 22").stdout("3 4 0 0 ").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("print_winner did not print winner of election")
+@check50.hidden("print_winner no imprimió el ganador de la elección")
 def print_winner1():
-    """print_winner prints name when someone has a majority"""
+    """print_winner imprime el nombre cuando alguien tiene mayoría"""
     check50.run("./runoff_test 2 8").stdout("Bob\n").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("print_winner did not print winner and then return true")
+@check50.hidden("print_winner no imprimió el ganador y luego devolvió verdadero")
 def print_winner2():
-    """print_winner returns true when someone has a majority"""
+    """print_winner devuelve verdadero cuando alguien tiene la mayoría"""
     check50.run("./runoff_test 2 9").stdout("Bob\ntrue").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("print_winner did not return false")
+@check50.hidden("print_winner no devolvió falso")
 def print_winner3():
-    """print_winner returns false when nobody has a majority"""
+    """print_winner devuelve falso cuando nadie tiene mayoría"""
     check50.run("./runoff_test 2 10").stdout("false").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("print_winner did not return false")
+@check50.hidden("print_winner no devolvió falso")
 def print_winner4():
-    """print_winner returns false when leader has exactly 50% of vote"""
+    """print_winner devuelve falso cuando el líder tiene exactamente el 50% de los votos"""
     check50.run("./runoff_test 2 11").stdout("false").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("find_min did not identify correct minimum")
+@check50.hidden("find_min no identificó el mínimo correcto")
 def find_min1():
-    """find_min returns minimum number of votes for candidate"""
+    """find_min devuelve el número mínimo de votos para el candidato"""
     check50.run("./runoff_test 2 12").stdout("1").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("find_min did not identify correct minimum")
+@check50.hidden("find_min no identificó el mínimo correcto")
 def find_min2():
-    """find_min returns minimum when all candidates are tied"""
+    """find_min devuelve mínimo cuando todos los candidatos están empatados"""
     check50.run("./runoff_test 2 13").stdout("7").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("find_min did not identify correct minimum")
+@check50.hidden("find_min no identificó el mínimo correcto")
 def find_min3():
-    """find_min ignores eliminated candidates"""
+    """find_min ignora a los candidatos eliminados"""
     check50.run("./runoff_test 2 14").stdout("4").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("is_tie did not return true")
+@check50.hidden("is_tie no devolvió verdadero")
 def is_tie1():
-    """is_tie returns true when election is tied"""
+    """is_tie devuelve verdadero cuando la elección está empatada"""
     check50.run("./runoff_test 2 15").stdout("true").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("is_tie did not return false")
+@check50.hidden("is_tie no devolvió falso")
 def is_tie2():
-    """is_tie returns false when election is not tied"""
+    """Is_tie devuelve falso cuando la elección no está empatada"""
     check50.run("./runoff_test 2 16").stdout("false").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("is_tie did not return false")
+@check50.hidden("is_tie no devolvió falso")
 def is_tie3():
-    """is_tie returns false when only some of the candidates are tied"""
+    """is_tie devuelve falso cuando solo algunos de los candidatos están empatados"""
     check50.run("./runoff_test 2 17").stdout("false").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("is_tie did not return true")
+@check50.hidden("is_tie no devolvió verdadero")
 def is_tie4():
-    """is_tie detects tie after some candidates have been eliminated"""
+    """is_tie detecta empate después de que algunos candidatos hayan sido eliminados"""
     check50.run("./runoff_test 2 18").stdout("true").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("eliminate did not eliminate correct candidates")
+@check50.hidden("eliminate no eliminó a los candidatos correctos")
 def eliminate1():
-    """eliminate eliminates candidate in last place"""
+    """eliminate elimina candidato en último lugar"""
     check50.run("./runoff_test 2 19").stdout("false false false true ").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("eliminate did not eliminate correct candidates")
+@check50.hidden("eliminate no eliminó a los candidatos correctos")
 def eliminate2():
-    """eliminate eliminates multiple candidates in tie for last"""
+    """eliminate elimina múltiples candidatos en empate para el último"""
     check50.run("./runoff_test 2 20").stdout("true false true false ").exit(0)
 
 @check50.check(compiles)
-@check50.hidden("eliminate did not eliminate correct candidates")
+@check50.hidden("eliminate no eliminó a los candidatos correctos")
 def eliminate3():
-    """eliminate eliminates candidates after some already eliminated"""
+    """eliminate elimina candidatos después de que algunos ya hayan sido eliminados"""
     check50.run("./runoff_test 2 21").stdout("true false true false ").exit(0)
