@@ -4,61 +4,61 @@ import check50.c
 
 @check50.check()
 def exists():
-    """cash.c exists"""
+    """cash.c existe"""
     check50.exists("cash.c")
 
 
 @check50.check(exists)
 def compiles():
-    """cash.c compiles"""
+    """cash.c compila"""
     check50.c.compile("cash.c", lcs50=True)
 
 
 @check50.check(compiles)
 def test041():
-    """input of 41 yields output of 4"""
+    """la entrada de 41 produce una salida de 4"""
     check50.run("./cash").stdin("41").stdout(coins(4), "4\n").exit(0)
 
 
 @check50.check(compiles)
 def test001():
-    """input of 1 yields output of 1"""
+    """la entrada de 1 produce la salida de 1"""
     check50.run("./cash").stdin("1").stdout(coins(1), "1\n").exit(0)
 
 
 @check50.check(compiles)
 def test015():
-    """input of 15 yields output of 2"""
+    """la entrada de 15 produce la salida de 2"""
     check50.run("./cash").stdin("15").stdout(coins(2), "2\n").exit(0)
 
 
 @check50.check(compiles)
 def test160():
-    """input of 160 yields output of 7"""
+    """la entrada de 160 produce la salida de 7"""
     check50.run("./cash").stdin("160").stdout(coins(7), "7\n").exit(0)
 
 
 @check50.check(compiles)
 def test230():
-    """input of 2300 yields output of 92"""
+    """la entrada de 2300 produce la salida de 92"""
     check50.run("./cash").stdin("2300").stdout(coins(92), "92\n").exit(0)
 
 
 @check50.check(compiles)
 def test_reject_negative():
-    """rejects a negative input like -1"""
+    """rechaza una entrada negativa como -1"""
     check50.run("./cash").stdin("-1").reject()
 
 
 @check50.check(compiles)
 def test_reject_foo():
-    """rejects a non-numeric input of "foo" """
+    """rechaza una entrada no-numérica de "foo" """
     check50.run("./cash").stdin("foo").reject()
 
 
 @check50.check(compiles)
 def test_reject_empty():
-    """rejects a non-numeric input of "" """
+    """rechaza una entrada no-numérica de "" """
     check50.run("./cash").stdin("").reject()
 
 
