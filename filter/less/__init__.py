@@ -5,35 +5,35 @@ import re
 SAMPLE_IMAGES = [
 
     # 0
-    ["testing with sample 3x3 image",
-    "first row: (255, 0, 0), (255, 0, 0), (255, 0, 0)",
-    "second row: (0, 255, 0), (0, 255, 0), (0, 255, 0)",
-    "third row: (0, 0, 255), (0, 0, 255), (0, 0, 255)"],
+    ["prueba con imagen de muestra 3x3",
+    "primera fila: (255, 0, 0), (255, 0, 0), (255, 0, 0)",
+    "segunda fila: (0, 255, 0), (0, 255, 0), (0, 255, 0)",
+    "tercera fila: (0, 0, 255), (0, 0, 255), (0, 0, 255)"],
 
     # 1
-    ["testing with sample 3x3 image",
-    "first row: (10, 20, 30), (40, 50, 60), (70, 80, 90)",
-    "second row: (110, 130, 140), (120, 140, 150), (130, 150, 160)",
-    "third row: (200, 210, 220), (220, 230, 240), (240, 250, 255)"],
+    ["prueba con imagen de muestra 3x3",
+    "primera fila: (10, 20, 30), (40, 50, 60), (70, 80, 90)",
+    "segunda fila: (110, 130, 140), (120, 140, 150), (130, 150, 160)",
+    "tercera fila: (200, 210, 220), (220, 230, 240), (240, 250, 255)"],
 
     # 2
-    ["testing with sample 4x4 image",
-    "first row: (10, 20, 30), (40, 50, 60), (70, 80, 90), (100, 110, 120)",
-    "second row: (110, 130, 140), (120, 140, 150), (130, 150, 160), (140, 160, 170)",
-    "third row: (195, 204, 213), (205, 214, 223), (225, 234, 243), (245, 254, 253)",
-    "fourth row: (50, 28, 90), (0, 0, 0), (255, 255, 255), (85, 85, 85)"],
+    ["prueba con imagen de muestra 4x4",
+    "primera fila: (10, 20, 30), (40, 50, 60), (70, 80, 90), (100, 110, 120)",
+    "segunda fila: (110, 130, 140), (120, 140, 150), (130, 150, 160), (140, 160, 170)",
+    "tercera fila: (195, 204, 213), (205, 214, 223), (225, 234, 243), (245, 254, 253)",
+    "cuarta fila: (50, 28, 90), (0, 0, 0), (255, 255, 255), (85, 85, 85)"],
 
     # 3
     ["testing with sample 1x2 image",
-    "first row: (255, 0, 0), (0, 0, 255)"],
+    "primera fila: (255, 0, 0), (0, 0, 255)"],
 
     # 4
     ["testing with sample 1x3 image",
-    "first row: (255, 0, 0), (0, 255, 0), (0, 0, 255)"]
+    "primera fila: (255, 0, 0), (0, 255, 0), (0, 0, 255)"]
 ]
 
 def SAMPLE_PIXEL(r, g, b):
-    return f"testing with pixel ({r}, {g}, {b})"
+    return f"probando con pixel ({r}, {g}, {b})"
 
 def log(lines):
     if isinstance(lines, list):
@@ -44,45 +44,45 @@ def log(lines):
 
 @check50.check()
 def exists():
-    """helpers.c exists"""
+    """helpers.c existe"""
     check50.exists("helpers.c")
     check50.include("Makefile", "bmp.h", "helpers.h", "testing.c")
 
 @check50.check(exists)
 def compiles():
-    """filter compiles"""
+    """filter compila"""
     check50.run("make").exit(0)
 
 @check50.check(compiles)
 def grayscale_single_pixel():
-    """grayscale correctly filters single pixel with whole number average"""
+    """La escala de grises filtra correctamente un solo píxel con un promedio de números enteros."""
     log(SAMPLE_PIXEL(20, 40, 90))
     check50.run("./testing 0 0").stdout("50 50 50\n");
     pass
 
 @check50.check(compiles)
 def grayscale_rounding():
-    """grayscale correctly filters single pixel without whole number average"""
+    """La escala de grises filtra correctamente un solo píxel sin promedio de números enteros."""
     log(SAMPLE_PIXEL(27, 28, 28))
     check50.run("./testing 0 1").stdout("28 28 28\n");
     pass
 
 @check50.check(compiles)
 def grayscale_gray():
-    """grayscale leaves alone pixels that are already gray"""
+    """La escala de grises deja solos los píxeles que ya son grises."""
     log(SAMPLE_PIXEL(50, 50, 50))
     check50.run("./testing 0 2").stdout("50 50 50\n");
     pass
 
 @check50.check(compiles)
 def grayscale_multi():
-    """grayscale correctly filters simple 3x3 image"""
+    """La escala de grises filtra correctamente una imagen simple de 3x3."""
     log(SAMPLE_IMAGES[0])
     check50.run("./testing 0 3").stdout("85 85 85\n" * 9);
 
 @check50.check(compiles)
 def grayscale3x3():
-    """grayscale correctly filters more complex 3x3 image"""
+    """La escala de grises filtra correctamente imágenes de 3x3 más complejas."""
     log(SAMPLE_IMAGES[1])
     check50.run("./testing 0 4").stdout("".join([
         "20 20 20\n", "50 50 50\n", "80 80 80\n",
@@ -93,7 +93,7 @@ def grayscale3x3():
 
 @check50.check(compiles)
 def grayscale4x4():
-    """grayscale correctly filters 4x4 image"""
+    """La escala de grises filtra correctamente la imagen 4x4."""
     log(SAMPLE_IMAGES[2])
     check50.run("./testing 0 5").stdout("".join([
         "20 20 20\n", "50 50 50\n", "80 80 80\n", "110 110 110\n",
@@ -104,14 +104,14 @@ def grayscale4x4():
 
 @check50.check(compiles)
 def sepia_single_pixel():
-    """sepia correctly filters single pixel"""
+    """Sepia filtra correctamente un solo píxel."""
     log(SAMPLE_PIXEL(20, 40, 90))
     check50.run("./testing 1 0").stdout("56 50 39\n");
     pass
 
 @check50.check(compiles)
 def sepia_multi():
-    """sepia correctly filters simple 3x3 image"""
+    """Sepia filtra correctamente una imagen simple de 3x3."""
     log(SAMPLE_IMAGES[0])
     check50.run("./testing 1 3").stdout("".join([
         "100 89 69\n", "100 89 69\n", "100 89 69\n",
@@ -121,7 +121,7 @@ def sepia_multi():
 
 @check50.check(compiles)
 def sepia3():
-    """sepia correctly filters more complex 3x3 image"""
+    """Sepia filtra correctamente imágenes 3x3 más complejas."""
     log(SAMPLE_IMAGES[1])
     check50.run("./testing 1 4").stdout("".join([
         "25 22 17\n", "66 58 45\n", "106 94 74\n",
@@ -132,7 +132,7 @@ def sepia3():
 
 @check50.check(compiles)
 def sepia4():
-    """sepia correctly filters 4x4 image"""
+    """Sepia filtra correctamente la imagen 4x4."""
     log(SAMPLE_IMAGES[2])
     check50.run("./testing 1 5").stdout("".join([
         "25 22 17\n", "66 58 45\n", "106 94 74\n", "147 131 102\n",
@@ -143,7 +143,7 @@ def sepia4():
 
 @check50.check(compiles)
 def reflect_row2():
-    """reflect correctly filters 1x2 image"""
+    """Reflejar filtra correctamente imagen 1x2"""
     log(SAMPLE_IMAGES[3])
     check50.run("./testing 2 0").stdout("".join([
         "0 0 255\n", "255 0 0\n"
@@ -151,7 +151,7 @@ def reflect_row2():
 
 @check50.check(compiles)
 def reflect_row3():
-    """reflect correctly filters 1x3 image"""
+    """Reflejar filtra correctamente imagen 1x3"""
     log(SAMPLE_IMAGES[4])
     check50.run("./testing 2 1").stdout("".join([
         "0 0 255\n", "0 255 0\n", "255 0 0\n"
@@ -159,7 +159,7 @@ def reflect_row3():
 
 @check50.check(compiles)
 def reflect_simple():
-    """reflect correctly filters image that is its own mirror image"""
+    """Reflejar filtra correctamente imagen que es su propia imagen reflejada"""
     log(SAMPLE_IMAGES[0])
     check50.run("./testing 2 2").stdout("".join([
         "255 0 0\n", "255 0 0\n", "255 0 0\n",
@@ -169,7 +169,7 @@ def reflect_simple():
 
 @check50.check(compiles)
 def reflect3():
-    """reflect correctly filters 3x3 image"""
+    """Reflejar filtra correctamente imagen 3x3"""
     log(SAMPLE_IMAGES[1])
     check50.run("./testing 2 3").stdout("".join([
         "70 80 90\n", "40 50 60\n", "10 20 30\n",
@@ -179,7 +179,7 @@ def reflect3():
 
 @check50.check(compiles)
 def reflect4():
-    """reflect correctly filters 4x4 image"""
+    """Reflejar filtra correctamente imagen 4x4"""
     log(SAMPLE_IMAGES[2])
     check50.run("./testing 2 4").stdout("".join([
         "100 110 120\n", "70 80 90\n", "40 50 60\n", "10 20 30\n",
@@ -190,25 +190,25 @@ def reflect4():
 
 @check50.check(compiles)
 def blur_middle():
-    """blur correctly filters middle pixel"""
+    """Desenfocar filtra correctamente el píxel medio."""
     log(SAMPLE_IMAGES[1])
     check50.run("./testing 3 0").stdout("127 140 149\n")
 
 @check50.check(compiles)
 def blur_edge():
-    """blur correctly filters pixel on edge"""
+    """Desenfocar filtra correctamente el píxel en el borde"""
     log(SAMPLE_IMAGES[1])
     check50.run("./testing 3 1").stdout("80 95 105\n")
 
 @check50.check(compiles)
 def blur_corner():
-    """blur correctly filters pixel in corner"""
+    """Desenfocar filtra correctamente el píxel en la esquina"""
     log(SAMPLE_IMAGES[1])
     check50.run("./testing 3 2").stdout("70 85 95\n")
 
 @check50.check(compiles)
 def blur3():
-    """blur correctly filters 3x3 image"""
+    """Desenfocar filtra correctamente imagen 3x3"""
     log(SAMPLE_IMAGES[1])
     check50.run("./testing 3 3").stdout("".join([
         "70 85 95\n", "80 95 105\n", "90 105 115\n",
@@ -218,7 +218,7 @@ def blur3():
 
 @check50.check(compiles)
 def blur4():
-    """blur correctly filters 4x4 image"""
+    """Desenfocar filtra correctamente imagen 4x4"""
     log(SAMPLE_IMAGES[2])
     check50.run("./testing 3 4").stdout("".join([
         "70 85 95\n", "80 95 105\n", "100 115 125\n", "110 125 135\n",
