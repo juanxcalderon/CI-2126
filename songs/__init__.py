@@ -6,7 +6,7 @@ import sqlparse
 
 @check50.check()
 def sql_exists():
-    """SQL files exists"""
+    """Archivos SQL existen"""
     for i in range(1, 8):
         check50.exists(f"{i}.sql")
     check50.include("songs.db")
@@ -14,13 +14,13 @@ def sql_exists():
 
 @check50.check()
 def answers_exists():
-    """answers.txt exists"""
+    """answers.txt existe"""
     check50.exists("answers.txt")
 
 
 @check50.check(sql_exists)
 def test1():
-    """1.sql produces correct result"""
+    """1.sql genera un resultado correcto"""
     solution = {
         "God's Plan",
         "SAD!",
@@ -128,7 +128,7 @@ def test1():
 
 @check50.check(sql_exists)
 def test2():
-    """2.sql produces correct result"""
+    """2.sql genera un resultado correcto"""
     solution = [
         "changes",
         "SAD!",
@@ -236,7 +236,7 @@ def test2():
 
 @check50.check(sql_exists)
 def test3():
-    """3.sql produces correct result"""
+    """3.sql genera un resultado correcto"""
     check_single_col(
         run_query("3.sql"),
         [
@@ -252,7 +252,7 @@ def test3():
 
 @check50.check(sql_exists)
 def test4():
-    """4.sql produces correct result"""
+    """4.sql genera un resultado correcto"""
     check_single_col(
         run_query("4.sql"),
         {
@@ -268,13 +268,13 @@ def test4():
 
 @check50.check(sql_exists)
 def test5():
-    """5.sql produces correct result"""
+    """5.sql genera un resultado correcto"""
     check_single_cell(run_query("5.sql"), "0.65906", floating=True)
 
 
 @check50.check(sql_exists)
 def test6():
-    """6.sql produces correct result"""
+    """6.sql genera un resultado correcto"""
     check_single_col(
         run_query("6.sql"),
         {
@@ -291,13 +291,13 @@ def test6():
 
 @check50.check(sql_exists)
 def test7():
-    """7.sql produces correct result"""
+    """7.sql genera un resultado correcto"""
     check_single_cell(run_query("7.sql"), "0.599", floating=True)
 
 
 @check50.check(sql_exists)
 def test8():
-    """8.sql produces correct result"""
+    """8.sql genera un resultado correcto"""
     check_single_col(
         run_query("8.sql"),
         {
@@ -326,12 +326,12 @@ def test8():
 
 @check50.check(answers_exists)
 def answers():
-    """answers.txt includes reflection"""
+    """answers.txt incluye reflexión"""
     with open("answers.txt", "r") as f:
         contents = f.read()
 
     if len(contents.split()) < 10:
-        raise check50.Failure("answers.txt does not contain a sufficiently long reflection")
+        raise check50.Failure("answers.txt no contiene una reflexión suficientemente larga")
 
 
 def run_query(filename):
@@ -343,22 +343,22 @@ def run_query(filename):
         result = db.execute(query)
         return result
     except Exception as e:
-        raise check50.Failure(f"Error when executing query: {str(e)}")
+        raise check50.Failure(f"Error al ejecutar la consulta: {str(e)}")
 
 
 def check_single_col(actual, expected, ordered=False):
     """
-    Checks for queries that return just a single column, ensures correct results.
+    Comprueba las consultas que devuelven solo una columna y garantiza resultados correctos.
     """
 
     # Make sure query returned results
     if actual is None or actual == []:
-        raise check50.Failure("Query did not return results")
+        raise check50.Failure("La consulta no arrojó resultados")
 
     # Make sure there is only a single column
     row_counts = {len(list(row.values())) for row in actual}
     if row_counts != {1}:
-        raise check50.Failure("Query should only return a single column")
+        raise check50.Failure("La consulta solo debe devolver una sola columna")
 
     # Get data from column
     try:
@@ -379,7 +379,7 @@ def check_single_cell(actual, expected, floating=False):
     if floating:
         if len(actual) != 1 or len(actual[0]) != 1:
             raise check50.Failure(
-                "Query should only return a single column and single cell"
+                "La consulta solo debe devolver una sola columna y una sola celda"
             )
         if abs(float(list(actual[0].values())[0]) - float(expected)) > 0.01:
             raise check50.Mismatch("\n".join(expected), str(actual))
@@ -389,17 +389,17 @@ def check_single_cell(actual, expected, floating=False):
 
 def check_double_col(actual, expected, ordered=False):
     """
-    Checks for queries that return just a single column, ensures correct results.
+    Comprueba las consultas que devuelven solo una columna y garantiza resultados correctos.
     """
 
     # Make sure query returned results
     if actual is None or actual == []:
-        raise check50.Failure("Query did not return results")
+        raise check50.Failure("La consulta no arrojó resultados")
 
     # Make sure there is only a single column
     row_counts = {len(list(row.values())) for row in actual}
     if row_counts != {2}:
-        raise check50.Failure("Query should only return a single column")
+        raise check50.Failure("La consulta solo debe devolver una sola columna")
 
     # Get data from column
     try:
