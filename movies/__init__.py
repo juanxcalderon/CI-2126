@@ -6,7 +6,7 @@ import sqlparse
 
 @check50.check()
 def exists():
-    """SQL files exists"""
+    """SQL files existe"""
     for i in range(1, 14):
         check50.exists(f"{i}.sql")
     check50.include("movies.db")
@@ -14,7 +14,7 @@ def exists():
 
 @check50.check(exists)
 def test1():
-    """1.sql produces correct result"""
+    """1.sql produce resultado correcto"""
     check_single_col(
         run_query("1.sql"),
         {"Iron Man", "The Dark Knight", "Slumdog Millionaire", "Kung Fu Panda"},
@@ -24,13 +24,13 @@ def test1():
 
 @check50.check(exists)
 def test2():
-    """2.sql produces correct result"""
+    """2.sql produce resultado correcto"""
     check_single_cell(run_query("2.sql"), "1988")
 
 
 @check50.check(exists)
 def test3():
-    """3.sql produces correct result"""
+    """3.sql produce resultado correcto"""
     check_single_col(
         run_query("3.sql"),
         [
@@ -52,13 +52,13 @@ def test3():
 
 @check50.check(exists)
 def test4():
-    """4.sql produces correct result"""
+    """4.sql produce resultado correcto"""
     check_single_cell(run_query("4.sql"), "2")
 
 
 @check50.check(exists)
 def test5():
-    """5.sql produces correct result"""
+    """5.sql produce resultado correcto"""
     check_double_col(
         run_query("5.sql"),
         [
@@ -78,13 +78,13 @@ def test5():
 
 @check50.check(exists)
 def test6():
-    """6.sql produces correct result"""
+    """6.sql produce resultado correcto"""
     check_single_cell(run_query("6.sql"), "7.74")
 
 
 @check50.check(exists)
 def test7():
-    """7.sql produces correct result"""
+    """7.sql produce resultado correcto"""
     check_double_col(
         run_query("7.sql"),
         [
@@ -103,7 +103,7 @@ def test7():
 
 @check50.check(exists)
 def test8():
-    """8.sql produces correct result"""
+    """8.sql produce resultado correcto"""
     check_single_col(
         run_query("8.sql"),
         {"Don Rickles", "Jim Varney", "Tom Hanks", "Tim Allen"},
@@ -113,7 +113,7 @@ def test8():
 
 @check50.check(exists)
 def test9():
-    """9.sql produces correct result"""
+    """9.sql produce resultado correcto"""
     check_single_col(
         run_query("9.sql"),
         [
@@ -132,7 +132,7 @@ def test9():
 
 @check50.check(exists)
 def test10():
-    """10.sql produces correct result"""
+    """10.sql produce resultado correcto"""
     check_single_col(
         run_query("10.sql"),
         {"Christopher Nolan", "Frank Darabont", "Yimou Zhang"},
@@ -142,7 +142,7 @@ def test10():
 
 @check50.check(exists)
 def test11():
-    """11.sql produces correct result"""
+    """11.sql produce resultado correcto"""
     check_single_col(
         run_query("11.sql"),
         ["42", "Black Panther", "Marshall", "Ma Rainey's Black Bottom", "Get on Up"],
@@ -152,7 +152,7 @@ def test11():
 
 @check50.check(exists)
 def test12():
-    """12.sql produces correct result"""
+    """12.sql produce resultado correcto"""
     try:
         check_single_col(
             run_query("12.sql"),
@@ -176,7 +176,7 @@ def test12():
 
 @check50.check(exists)
 def test13():
-    """13.sql produces correct result"""
+    """13.sql produce resultado correcto"""
     check_single_col(
         run_query("13.sql"),
         {
@@ -201,22 +201,22 @@ def run_query(filename):
         result = db.execute(query)
         return result
     except Exception as e:
-        raise check50.Failure(f"Error when executing query: {str(e)}")
+        raise check50.Failure(f"Error al ejecutar consulta: {str(e)}")
 
 
 def check_single_col(actual, expected, ordered=False):
     """
-    Checks for queries that return just a single column, ensures correct results.
+    Comprueba las consultas que devuelven solo una columna y garantiza resultados correctos.
     """
 
     # Make sure query returned results
     if actual is None or actual == []:
-        raise check50.Failure("Query did not return results")
+        raise check50.Failure("La consulta no arrojó resultados")
 
     # Make sure there is only a single column
     row_counts = {len(list(row.values())) for row in actual}
     if row_counts != {1}:
-        raise check50.Failure("Query should only return a single column")
+        raise check50.Failure("La consulta solo debe devolver una sola columna")
 
     # Get data from column
     try:
@@ -239,17 +239,17 @@ def check_single_cell(actual, expected):
 
 def check_double_col(actual, expected, ordered=False):
     """
-    Checks for queries that return just a single column, ensures correct results.
+    Comprueba las consultas que devuelven solo una columna y garantiza resultados correctos.
     """
 
     # Make sure query returned results
     if actual is None or actual == []:
-        raise check50.Failure("Query did not return results")
+        raise check50.Failure("La consulta no arrojó resultados")
 
     # Make sure there are only two columns
     row_counts = {len(list(row.values())) for row in actual}
     if row_counts != {2}:
-        raise check50.Failure("Query should return exactly two columns")
+        raise check50.Failure("La consulta debe devolver exactamente dos columnas")
 
     # Get data from column
     try:
