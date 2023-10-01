@@ -3,75 +3,75 @@ import check50.c
 
 @check50.check()
 def exists():
-    """credit.c exists"""
+    """credit.c existe"""
     check50.exists("credit.c")
 
 @check50.check(exists)
 def compiles():
-    """credit.c compiles"""
+    """credit.c compila"""
     check50.c.compile("credit.c", lcs50=True)
 
 @check50.check(compiles)
 def test1():
-    """identifies 378282246310005 as AMEX"""
+    """identifica 378282246310005 como AMEX"""
     check50.run("./credit").stdin("378282246310005").stdout("AMEX\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test2():
-    """identifies 371449635398431 as AMEX"""
+    """identifica 371449635398431 como AMEX"""
     check50.run("./credit").stdin("371449635398431").stdout("AMEX\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test3():
-    """identifies 5555555555554444 as MASTERCARD"""
+    """identifica 5555555555554444 como MASTERCARD"""
     check50.run("./credit").stdin("5555555555554444").stdout("MASTERCARD\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test4():
-    """identifies 5105105105105100 as MASTERCARD"""
+    """identifica 5105105105105100 como MASTERCARD"""
     check50.run("./credit").stdin("5105105105105100").stdout("MASTERCARD\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test5():
-    """identifies 4111111111111111 as VISA"""
+    """identifica 4111111111111111 como VISA"""
     check50.run("./credit").stdin("4111111111111111").stdout("VISA\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test6():
-    """identifies 4012888888881881 as VISA"""
+    """identifica 4012888888881881 como VISA"""
     check50.run("./credit").stdin("4012888888881881").stdout("VISA\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test7():
-    """identifies 4222222222222 as VISA"""
+    """identifica 4222222222222 como VISA"""
     check50.run("./credit").stdin("4222222222222").stdout("VISA\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test8():
-    """identifies 1234567890 as INVALID"""
+    """identifica 1234567890 como INVALID"""
     check50.run("./credit").stdin("1234567890").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test9():
-    """identifies 369421438430814 as INVALID"""
+    """identifica 369421438430814 como INVALID"""
     check50.run("./credit").stdin("369421438430814").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test10():
-    """identifies 4062901840 as INVALID"""
+    """identifica 4062901840 como INVALID"""
     check50.run("./credit").stdin("4062901840").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test11():
-    """identifies 5673598276138003 as INVALID"""
+    """identifica 5673598276138003 como INVALID"""
     check50.run("./credit").stdin("5673598276138003").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test12():
-    """identifies 4111111111111113 as INVALID"""
+    """identifica 4111111111111113 como INVALID"""
     check50.run("./credit").stdin("4111111111111113").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test13():
-    """identifies 4222222222223 as INVALID"""
+    """identifica 4222222222223 como INVALID"""
     check50.run("./credit").stdin("4222222222223").stdout("INVALID\n").stdout(check50.EOF).exit(0)
