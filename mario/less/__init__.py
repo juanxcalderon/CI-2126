@@ -5,7 +5,7 @@ import check50.c
 def exists():
     """mario.c existe"""
     check50.exists("mario.c")
-    check50.include("1.txt", "2.txt", "8.txt")
+    check50.include("1.txt", "2.txt", "5.txt", "8.txt")
 
 @check50.check(exists)
 def compiles():
