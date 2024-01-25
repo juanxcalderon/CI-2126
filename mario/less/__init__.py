@@ -5,7 +5,7 @@ import check50.c
 def exists():
     """mario.c existe"""
     check50.exists("mario.c")
-    check50.include("1.txt", "2.txt", "5.txt", "8.txt")
+    check50.include("1.txt", "2.txt", "5.txt", "10.txt")
 
 @check50.check(exists)
 def compiles():
@@ -36,8 +36,8 @@ def test2():
 
 @check50.check(compiles)
 def test8():
-    """maneja la altura de 8 de forma correcta"""
-    out = check50.run("./mario").stdin("8").stdout()
+    """maneja la altura de 10 de forma correcta"""
+    out = check50.run("./mario").stdin("10").stdout()
     check_pyramid(out, open("8.txt").read())
 
 @check50.check(compiles)
