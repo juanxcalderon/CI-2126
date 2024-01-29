@@ -38,7 +38,7 @@ def test2():
 def test8():
     """maneja la altura de 10 de forma correcta"""
     out = check50.run("./mario").stdin("10").stdout()
-    check_pyramid(out, open("8.txt").read())
+    check_pyramid(out, open("10.txt").read())
 
 @check50.check(compiles)
 def test9():
