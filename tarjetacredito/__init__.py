@@ -84,4 +84,4 @@ def test14():
 @check50.check(compiles)
 def test15():
     """identifica 430000000000000 como INVALID (dígitos identificadores VISA, longitud AMEX inválidos)"""
-    check50.ruin("./credit").stdin("430000000000000").stdout("INVALID\n").stdout(check50.EOF).exit(0)
+    check50.run("./credit").stdin("430000000000000").stdout("INVALID\n").stdout(check50.EOF).exit(0)
