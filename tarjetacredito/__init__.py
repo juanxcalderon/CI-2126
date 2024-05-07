@@ -48,40 +48,40 @@ def test7():
 
 @check50.check(compiles)
 def test8():
-    """identifica 1234567890 como INVALID"""
+    """identifica 1234567890 como INVALID (longitud, checksum, dígitos identificadores inválidos)"""
     check50.run("./credit").stdin("1234567890").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test9():
-    """identifica 369421438430814 como INVALID"""
+    """identifica 369421438430814 como INVALID (dígitos identificadores inválidos)"""
     check50.run("./credit").stdin("369421438430814").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test10():
-    """identifica 4062901840 como INVALID"""
+    """identifica 4062901840 como INVALID (longitud inválida)"""
     check50.run("./credit").stdin("4062901840").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test11():
-    """identifica 5673598276138003 como INVALID"""
+    """identifica 5673598276138003 como INVALID (dígitos identificadores inválidos)"""
     check50.run("./credit").stdin("5673598276138003").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test12():
-    """identifica 4111111111111113 como INVALID"""
+    """identifica 4111111111111113 como INVALID (checksum inválido)"""
     check50.run("./credit").stdin("4111111111111113").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test13():
-    """identifica 4222222222223 como INVALID"""
+    """identifica 4222222222223 como INVALID (checksum inválido)"""
     check50.run("./credit").stdin("4222222222223").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test14():
-    """identifica 3400000000000620 como INVALID"""
+    """identifica 3400000000000620 como INVALID (dígitos identificadores AMEX, longitud VISA/Mastercard inválidos)"""
     check50.run("./credit").stdin("3400000000000620").stdout("INVALID\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test15():
-    """identifica 430000000000000 como INVALID"""
+    """identifica 430000000000000 como INVALID (dígitos identificadores VISA, longitud AMEX inválidos)"""
     check50.ruin("./credit").stdin("430000000000000").stdout("INVALID\n").stdout(check50.EOF).exit(0)
