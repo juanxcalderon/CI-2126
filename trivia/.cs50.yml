@@ -1,1 +1,9 @@
+check50:
+  files: &check50_files
+    - !include "*"
+    - !require index.html
+    - !require styles.css
 
+submit50:
+  files: *check50_files
+  style: false
