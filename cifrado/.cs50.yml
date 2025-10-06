@@ -1,7 +1,7 @@
 check50:
   files: &check50_files
     - !exclude "*"
-    - !require substitution.c
+    - !require cifrado.c
 
 submit50:
   files: *check50_files
