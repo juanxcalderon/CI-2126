@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "helpers.h"
+#include "efectosvisuales.h"
 
 #define GRAYSCALE 0
 #define SEPIA 1

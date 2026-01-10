@@ -44,13 +44,13 @@ def log(lines):
 
 @check50.check()
 def exists():
-    """helpers.c existe"""
-    check50.exists("helpers.c")
-    check50.include("Makefile", "bmp.h", "helpers.h", "testing.c")
+    """efectosvisuales.c existe"""
+    check50.exists("efectosvisuales.c")
+    check50.include("Makefile", "bmp.h", "efectosvisuales.h", "testing.c")
 
 @check50.check(exists)
 def compiles():
-    """filter compila"""
+    """filtros compila"""
     check50.run("make").exit(0)
 
 @check50.check(compiles)
