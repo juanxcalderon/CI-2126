@@ -1,4 +1,4 @@
-less = __import__("check50").import_checks("../sencillo")
+sencillo = __import__("check50").import_checks("../sencillo")
 from sencillo import *
 
-# mario/more checks are identical to the mario/less checks just with different txt files
+# Las validaciones de mario/complejo son idénticas a las de mario/sencillo, con la única diferencia de que utilizan archivos .txt distintos.
