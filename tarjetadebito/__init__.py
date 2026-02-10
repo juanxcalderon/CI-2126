@@ -14,32 +14,32 @@ def compiles():
 @check50.check(compiles)
 def test1():
     """identifica 4400002000000004 como VISA DÉBITO"""
-    check50.run("./debito").stdin("4400002000000004").stdout("VISA DÉBITO\n").stdout(check50.EOF).exit(0)
+    check50.run("./debito").stdin("4400002000000004").stdout("VISA DEBITO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test2():
     """identifica 4508000000000000 como VISA DÉBITO"""
-    check50.run("./debito").stdin("4508000000000000").stdout("VISA DÉBITO\n").stdout(check50.EOF).exit(0)
+    check50.run("./debito").stdin("4508000000000000").stdout("VISA DEBITO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test3():
     """identifica 5105105105105100 como MASTERCARD DÉBITO (CIRRUS)"""
-    check50.run("./debito").stdin("5105105105105100").stdout("MASTERCARD DÉBITO (CIRRUS)\n").stdout(check50.EOF).exit(0)
+    check50.run("./debito").stdin("5105105105105100").stdout("MASTERCARD DEBITO (CIRRUS)\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test4():
     """identifica 5555555555554444 como MASTERCARD DÉBITO (CIRRUS)"""
-    check50.run("./debito").stdin("5555555555554444").stdout("MASTERCARD DÉBITO (CIRRUS)\n").stdout(check50.EOF).exit(0)
+    check50.run("./debito").stdin("5555555555554444").stdout("MASTERCARD DEBITO (CIRRUS)\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test5():
     """identifica 6500000000000002 como DISCOVERY DÉBITO"""
-    check50.run("./debito").stdin("6500000000000002").stdout("DISCOVERY DÉBITO\n").stdout(check50.EOF).exit(0)
+    check50.run("./debito").stdin("6500000000000002").stdout("DISCOVERY DEBITO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test6():
     """identifica 6011444444444444 como DISCOVERY DÉBITO"""
-    check50.run("./debito").stdin("6011444444444444").stdout("DISCOVERY DÉBITO\n").stdout(check50.EOF).exit(0)
+    check50.run("./debito").stdin("6011444444444444").stdout("DISCOVERY DEBITO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test7():
