@@ -44,7 +44,7 @@ def test6():
 @check50.check(compiles)
 def test7():
     """identifica 503396198909017 como MAESTRO"""
-    check50.run("./debito").stdin("503396198909017").stdout("VISA\n").stdout(check50.EOF).exit(0)
+    check50.run("./debito").stdin("503396198909017").stdout("MAESTRO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test7():
