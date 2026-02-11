@@ -24,12 +24,12 @@ def test2():
 @check50.check(compiles)
 def test3():
     """identifica 5105105105105100 como MASTERCARD DEBITO (CIRRUS)"""
-    check50.run("./debito").stdin("5105105105105100").stdout("MASTERCARD DEBITO (CIRRUS)\n").stdout(check50.EOF).exit(0)
+    check50.run("./debito").stdin("5105105105105100").stdout("CIRRUS\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test4():
     """identifica 5555555555554444 como MASTERCARD DEBITO (CIRRUS)"""
-    check50.run("./debito").stdin("5555555555554444").stdout("MASTERCARD DEBITO (CIRRUS)\n").stdout(check50.EOF).exit(0)
+    check50.run("./debito").stdin("5555555555554444").stdout("CIRRUS\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test5():
