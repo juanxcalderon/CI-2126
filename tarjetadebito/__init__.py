@@ -38,13 +38,13 @@ def test5():
 
 @check50.check(compiles)
 def test6():
-    """identifica 6011444444444444 como DISCOVERY DEBITO"""
-    check50.run("./debito").stdin("6011444444444444").stdout("DISCOVERY DEBITO\n").stdout(check50.EOF).exit(0)
+    """identifica 6011000000000003 como DISCOVERY DEBITO"""
+    check50.run("./debito").stdin("6011000000000003").stdout("DISCOVERY DEBITO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test7():
-    """identifica 503396198909017 como MAESTRO"""
-    check50.run("./debito").stdin("503396198909017").stdout("MAESTRO\n").stdout(check50.EOF).exit(0)
+    """identifica 503396198909013 como MAESTRO"""
+    check50.run("./debito").stdin("503396198909013").stdout("MAESTRO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test8():
