@@ -48,8 +48,8 @@ def test7():
 
 @check50.check(compiles)
 def test8():
-    """identifica 6762990000000000 como MAESTRO"""
-    check50.run("./debito").stdin("6762990000000000").stdout("MAESTRO\n").stdout(check50.EOF).exit(0)
+    """identifica 6762990000000007 como MAESTRO"""
+    check50.run("./debito").stdin("6762990000000007").stdout("MAESTRO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test9():
