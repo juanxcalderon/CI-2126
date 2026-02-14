@@ -53,40 +53,40 @@ def test8():
 
 @check50.check(compiles)
 def test9():
-    """identifica 1234567890 como INVALID (longitud, checksum, dígitos identificadores inválidos)"""
-    check50.run("./debito").stdin("1234567890").stdout("INVALID\n").stdout(check50.EOF).exit(0)
+    """identifica 1234567890 como INVALIDO (longitud, checksum, dígitos identificadores inválidos)"""
+    check50.run("./debito").stdin("1234567890").stdout("INVALIDO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test10():
-    """identifica 369421438430814 como INVALID (dígitos identificadores inválidos)"""
-    check50.run("./debito").stdin("369421438430814").stdout("INVALID\n").stdout(check50.EOF).exit(0)
+    """identifica 369421438430814 como INVALIDO (dígitos identificadores inválidos)"""
+    check50.run("./debito").stdin("369421438430814").stdout("INVALIDO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test11():
-    """identifica 4062901840 como INVALID (longitud inválida)"""
-    check50.run("./debito").stdin("4062901840").stdout("INVALID\n").stdout(check50.EOF).exit(0)
+    """identifica 4062901840 como INVALIDO (longitud inválida)"""
+    check50.run("./debito").stdin("4062901840").stdout("INVALIDO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test12():
-    """identifica 5673598276138003 como INVALID (dígitos identificadores inválidos)"""
-    check50.run("./debito").stdin("5673598276138003").stdout("INVALID\n").stdout(check50.EOF).exit(0)
+    """identifica 5673598276138003 como INVALIDO (dígitos identificadores inválidos)"""
+    check50.run("./debito").stdin("5673598276138003").stdout("INVALIDO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test13():
-    """identifica 4111111111111113 como INVALID (checksum inválido)"""
-    check50.run("./debito").stdin("4111111111111113").stdout("INVALID\n").stdout(check50.EOF).exit(0)
+    """identifica 4111111111111113 como INVALIDO (checksum inválido)"""
+    check50.run("./debito").stdin("4111111111111113").stdout("INVALIDO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test14():
-    """identifica 4222222222223 como INVALID (checksum inválido)"""
-    check50.run("./debito").stdin("4222222222223").stdout("INVALID\n").stdout(check50.EOF).exit(0)
+    """identifica 4222222222223 como INVALIDO (checksum inválido)"""
+    check50.run("./debito").stdin("4222222222223").stdout("INVALIDO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test15():
-    """identifica 3400000000000620 como INVALID (dígitos identificadores AMEX, longitud VISA/Mastercard inválidos)"""
-    check50.run("./debito").stdin("3400000000000620").stdout("INVALID\n").stdout(check50.EOF).exit(0)
+    """identifica 3400000000000620 como INVALIDO (dígitos identificadores AMEX, longitud VISA/Mastercard inválidos)"""
+    check50.run("./debito").stdin("3400000000000620").stdout("INVALIDO\n").stdout(check50.EOF).exit(0)
 
 @check50.check(compiles)
 def test16():
-    """identifica 430000000000000 como INVALID (dígitos identificadores VISA, longitud AMEX inválidos)"""
-    check50.run("./debito").stdin("430000000000000").stdout("INVALID\n").stdout(check50.EOF).exit(0)
+    """identifica 430000000000000 como INVALIDO (dígitos identificadores VISA, longitud AMEX inválidos)"""
+    check50.run("./debito").stdin("430000000000000").stdout("INVALIDO\n").stdout(check50.EOF).exit(0)
