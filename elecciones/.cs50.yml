@@ -1,7 +1,7 @@
 check50:
   files: &check50_files
     - !exclude "*"
-    - !require runoff.c
+    - !require elecciones.c
 
 submit50:
   files: *check50_files
