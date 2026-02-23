@@ -3,20 +3,20 @@ import check50.c
 
 @check50.check()
 def exists():
-    """hello.c existe"""
-    check50.exists("hello.c")
+    """hola_mundo.c existe"""
+    check50.exists("hola_mundo.c")
 
 @check50.check(exists)
 def compiles():
-    """hello.c compila"""
-    check50.c.compile("hello.c", lcs50=True)
+    """hola_mundo.c compila"""
+    check50.c.compile("hola_mundo.c", lcs50=True)
 
 @check50.check(compiles)
 def emma():
-    """responde al nombre de Emma"""
-    check50.run("./hello").stdin("Emma").stdout("¡Hola, Emma!").exit()
+    """responde al nombre de Angela"""
+    check50.run("./hola_mundo").stdin("Emma").stdout("¡Hola, Angela!").exit()
 
 @check50.check(compiles)
 def rodrigo():
     """responde al nombre de Rodrigo"""
-    check50.run("./hello").stdin("Rodrigo").stdout("¡Hola, Rodrigo!").exit()
+    check50.run("./hola_mundo").stdin("Rodrigo Alvarez").stdout("¡Hola, Rodrigo Alvarez!").exit()
