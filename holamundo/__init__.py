@@ -20,3 +20,8 @@ def emma():
 def rodrigo():
     """responde al nombre de Rodrigo"""
     check50.run("./hola_mundo").stdin("Rodrigo Alvarez").stdout("¡Hola, Rodrigo Alvarez!").exit()
+
+@check50.check(compiles)
+def jose():
+    """responde al nombre de José Pérez"""
+    check50.run("./hola_mundo").stdin("José Pérez").stdout("¡Hola, José Pérez!").exit()
