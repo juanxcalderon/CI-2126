@@ -4,8 +4,8 @@ check50:
     - !include "*.c"
     - !include "*.h"
     - !include "*.md"
-    - !exclude speller.c
-    - !require dictionary.c
+    - !exclude corrector.c
+    - !require diccionario.c
 
 submit50:
   files: *check50_files
