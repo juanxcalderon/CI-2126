@@ -1,19 +1,19 @@
-// Declares a dictionary's functionality
+// Declara la funcionalidad del diccionario
 
-#ifndef DICTIONARY_H
-#define DICTIONARY_H
+#ifndef DICCIONARIO_H
+#define DICCIONARIO_H
 
 #include <stdbool.h>
 
-// Maximum length for a word
-// (e.g., pneumonoultramicroscopicsilicovolcanoconiosis)
+// Longitud máxima de una palabra
+// (ej: pneumonoultramicroscopicsilicovolcanoconiosis)
 #define LENGTH 45
 
-// Prototypes
+// Prototipos de funciones
 bool check(const char *word);
 unsigned int hash(const char *word);
 bool load(const char *dictionary);
 unsigned int size(void);
 bool unload(void);
 
-#endif // DICTIONARY_H
+#endif // DICCIONARIO_H

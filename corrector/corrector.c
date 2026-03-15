@@ -1,5 +1,5 @@
 /**
- * Implements a spell-checker.
+ * Implementa un corrector ortográfico.
  */
 
 #include <ctype.h>
@@ -8,136 +8,134 @@
 #include <sys/time.h>
 #include <unistd.h>
 
-#include "dictionary.h"
+#include "diccionario.h"
 #undef calculate
 #undef getrusage
 
-// default dictionary
-#define DICTIONARY "dictionaries/large"
+// Diccionario predeterminado
+#define DICTIONARY "diccionarios/grande"
 
 int main(int argc, char *argv[])
 {
-    // check for correct number of args
+    // Verificar el número correcto de argumentos
     if (argc != 2 && argc != 3)
     {
-        printf("Usage: speller [dictionary] text\n");
+        printf("Uso: ./corrector [diccionario] texto\n");
         return 1;
     }
 
-    // determine dictionary to use
+    // Determinar qué diccionario usar
     char* dictionary = (argc == 3) ? argv[1] : DICTIONARY;
 
     bool loaded = load(dictionary);
 
-    // abort if dictionary not loaded
+    // Abortar si el diccionario no pudo cargarse
     if (!loaded)
     {
-        printf("Could not load %s.\n", dictionary);
+        printf("No se pudo cargar %s.\n", dictionary);
         return 1;
     }
 
-    // try to open text
+    // Intentar abrir el texto
     char *text = (argc == 3) ? argv[2] : argv[1];
     FILE *fp = fopen(text, "r");
     if (fp == NULL)
     {
-        printf("Could not open %s.\n", text);
+        printf("No se pudo abrir %s.\n", text);
         unload();
         return 1;
     }
 
-    // prepare to report misspellings
-    printf("MISSPELLED WORDS\n\n");
+    // Preparar para reportar errores ortográficos
+    printf("PALABRAS MAL ESCRITAS\n\n");
 
-    // prepare to spell-check
+    // Preparar para revisar ortografía
     int index = 0, misspellings = 0, words = 0;
-    char word[LENGTH+1];
+    char word[LENGTH + 1];
 
-    // spell-check each word in text
+    // Revisar cada palabra del texto
     char c;
     while (fread(&c, sizeof(char), 1, fp))
     {
-        // allow only alphabetical characters and apostrophes
+        // Permitir solo caracteres alfabéticos y apóstrofes
         if (isalpha(c) || (c == '\'' && index > 0))
         {
-            // append character to word
+            // Agregar carácter a la palabra
             word[index] = c;
             index++;
 
-            // ignore alphabetical strings too long to be words
+            // Ignorar cadenas alfabéticas demasiado largas para ser palabras
             if (index > LENGTH)
             {
-                // consume remainder of alphabetical string
+                // Consumir el resto de la cadena alfabética
                 while (fread(&c, sizeof(char), 1, fp) && isalpha(c));
 
-                // prepare for new word
+                // Preparar para la siguiente palabra
                 index = 0;
             }
         }
 
-        // ignore words with numbers (like MS Word can)
+        // Ignorar palabras con números
         else if (isdigit(c))
         {
-            // consume remainder of alphanumeric string
+            // Consumir el resto de la cadena alfanumérica
             while (fread(&c, sizeof(char), 1, fp) && isalnum(c));
 
-            // prepare for new word
+            // Preparar para la siguiente palabra
             index = 0;
         }
 
-        // we must have found a whole word
+        // Se encontró una palabra completa
         else if (index > 0)
         {
-            // terminate current word
+            // Terminar la palabra actual
             word[index] = '\0';
 
-            // update counter
+            // Actualizar contador
             words++;
 
-            // check word's spelling
+            // Verificar ortografía de la palabra
             bool misspelled = !check(word);
 
-            // print word if misspelled
+            // Imprimir la palabra si está mal escrita
             if (misspelled)
             {
                 printf("%s\n", word);
                 misspellings++;
             }
 
-            // prepare for next word
+            // Preparar para la siguiente palabra
             index = 0;
         }
     }
 
-    // check whether there was an error
+    // Verificar si hubo un error de lectura
     if (ferror(fp))
     {
         fclose(fp);
-        printf("Error reading %s.\n", text);
+        printf("Error al leer %s.\n", text);
         unload();
         return 1;
     }
 
-    // close text
+    // Cerrar el texto
     fclose(fp);
 
     unsigned int n = size();
 
-
     bool unloaded = unload();
 
-    // abort if dictionary not unloaded
+    // Abortar si el diccionario no pudo descargarse
     if (!unloaded)
     {
-        printf("Could not unload %s.\n", dictionary);
+        printf("No se pudo descargar %s.\n", dictionary);
         return 1;
     }
 
-    // report benchmarks
-    printf("\nWORDS MISSPELLED:     %d\n", misspellings);
-    printf("WORDS IN DICTIONARY:  %d\n", n);
-    printf("WORDS IN TEXT:        %d\n", words);
+    // Reportar estadísticas
+    printf("\nPALABRAS MAL ESCRITAS:       %d\n", misspellings);
+    printf("PALABRAS EN EL DICCIONARIO:  %d\n", n);
+    printf("PALABRAS EN EL TEXTO:        %d\n", words);
 
-    // that's all folks
     return 0;
 }
