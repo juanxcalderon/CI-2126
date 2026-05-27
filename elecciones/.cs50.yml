@@ -1,7 +1,5 @@
 check50:
-  files: &check50_files
-    - !exclude "*"
-    - !require elecciones.c
-
-submit50:
-  files: *check50_files
+  checks: __init__.py
+  files:
+    - !require "elecciones.c"
+    - !exclude "*.o"
