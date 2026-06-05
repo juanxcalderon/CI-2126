@@ -34,7 +34,7 @@ def exists():
 @check50.check(exists)
 def compiles():
     """elecciones.c compila"""
-    check50.c.compile("elecciones.c", exe_name="elecciones", flags=["-lcs50"])
+    check50.c.compile("elecciones.c", exe_name="elecciones", lcs50=True)
 
 
 # ─────────────────────────────────────────────
@@ -266,4 +266,3 @@ def max_candidatos():
         .stdin(stdin) \
         .stdout(r"(?i)Alice", regex=True) \
         .exit(0)
-
