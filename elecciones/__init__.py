@@ -266,3 +266,4 @@ def max_candidatos():
         .stdin(stdin) \
         .stdout(r"(?i)Alice", regex=True) \
         .exit(0)
+
