@@ -3,3 +3,8 @@ check50:
   files:
     - !require "elecciones.c"
     - !exclude "*.o"
+
+submit50:
+  files:
+    - !require "elecciones.c"
+    - !exclude "*.o"
