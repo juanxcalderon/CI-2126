@@ -1,0 +1,8 @@
+RESULTADOS
+
+algoritmo: archivo.txt
+algoritmo: archivo.txt
+inexistente:
+
+PALABRAS INDEXADAS:                 1
+CONSULTAS PROCESADAS:               3

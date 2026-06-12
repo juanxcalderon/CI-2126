@@ -1,0 +1,1 @@
+Malloc y free ayudan a manejar memoria dinamica.

@@ -1,0 +1,7 @@
+RESULTADOS
+
+hash: a.txt b.txt
+memoria: b.txt c.txt
+
+PALABRAS INDEXADAS:                 2
+CONSULTAS PROCESADAS:               2

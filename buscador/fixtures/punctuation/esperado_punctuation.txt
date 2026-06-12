@@ -1,0 +1,10 @@
+RESULTADOS
+
+hash: dos.txt uno.txt
+memoria: dos.txt uno.txt
+tabla: dos.txt uno.txt
+punteros: tres.txt
+estructura: uno.txt
+
+PALABRAS INDEXADAS:                 9
+CONSULTAS PROCESADAS:               5

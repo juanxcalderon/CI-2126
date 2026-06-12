@@ -1,0 +1,6 @@
+check50: juanxcalderon/CI-2126/2026/abr-jul/buscador
+
+submit50:
+  scope:
+    - indice.c
+    - indice.h

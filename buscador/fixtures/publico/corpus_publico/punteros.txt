@@ -1,0 +1,1 @@
+Los punteros permiten construir listas enlazadas y tabla hash.

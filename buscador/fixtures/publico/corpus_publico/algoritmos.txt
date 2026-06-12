@@ -1,0 +1,1 @@
+La tabla hash permite busqueda rapida. La memoria importa.

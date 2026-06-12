@@ -1,0 +1,4 @@
+HASH
+memoria
+listas
+inexistente

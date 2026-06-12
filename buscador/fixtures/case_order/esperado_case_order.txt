@@ -1,0 +1,9 @@
+RESULTADOS
+
+hash: alfa.txt zeta.txt
+memoria: alfa.txt zeta.txt
+listas: medio.txt
+inexistente:
+
+PALABRAS INDEXADAS:                 6
+CONSULTAS PROCESADAS:               4

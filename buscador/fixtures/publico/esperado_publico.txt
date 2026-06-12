@@ -1,0 +1,10 @@
+RESULTADOS
+
+hash: algoritmos.txt estructuras.txt punteros.txt
+memoria: algoritmos.txt memoria.txt
+tabla: algoritmos.txt estructuras.txt punteros.txt
+punteros: punteros.txt
+recursion:
+
+PALABRAS INDEXADAS:                 18
+CONSULTAS PROCESADAS:               5
