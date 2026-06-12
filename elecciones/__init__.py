@@ -34,7 +34,7 @@ def exists():
 @check50.check(exists)
 def compiles():
     """elecciones.c compila"""
-    check50.c.compile("elecciones.c", exe_name="elecciones")
+    check50.c.compile("elecciones.c", exe_name="elecciones", lcs50=True)
 
 
 # ─────────────────────────────────────────────
