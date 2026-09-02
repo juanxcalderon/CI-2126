@@ -1,404 +1,1506 @@
--- Create tables
-CREATE TABLE movies (
+-- Base de datos reducida para check50 — Laboratorio 8 (CI-2126)
+-- Los identificadores NO coinciden con los de canciones_spotify.db.
+
+CREATE TABLE musicos (
     id INTEGER,
-    title TEXT NOT NULL,
-    year TEXT,
+    nombre TEXT NOT NULL,
+    tipo TEXT NOT NULL,
     PRIMARY KEY(id)
 );
-CREATE TABLE people (
+CREATE TABLE albumes (
     id INTEGER,
-    name TEXT NOT NULL,
-    birth TEXT,
-    PRIMARY KEY(id)
+    titulo TEXT NOT NULL,
+    anio NUMERIC,
+    musico_id INTEGER NOT NULL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(musico_id) REFERENCES musicos(id)
 );
-CREATE TABLE stars (
-    movie_id INTEGER NOT NULL,
-    person_id INTEGER NOT NULL
+CREATE TABLE canciones (
+    id INTEGER,
+    titulo TEXT NOT NULL,
+    album_id INTEGER NOT NULL,
+    duracion_ms INTEGER NOT NULL,
+    tempo REAL,
+    bailabilidad REAL,
+    energia REAL,
+    valencia REAL,
+    sonoridad REAL,
+    acustica REAL,
+    instrumentalidad REAL,
+    vivacidad REAL,
+    locuacidad REAL,
+    PRIMARY KEY(id),
+    FOREIGN KEY(album_id) REFERENCES albumes(id)
 );
-CREATE TABLE directors (
-    movie_id INTEGER NOT NULL,
-    person_id INTEGER NOT NULL
+CREATE TABLE popularidad (
+    cancion_id INTEGER NOT NULL UNIQUE,
+    popularidad INTEGER NOT NULL,
+    FOREIGN KEY(cancion_id) REFERENCES canciones(id)
 );
-CREATE TABLE ratings (
-    movie_id INTEGER NOT NULL,
-    rating REAL NOT NULL,
-    votes INTEGER NOT NULL,
-    PRIMARY KEY(movie_id)
+CREATE TABLE colaboraciones (
+    cancion_id INTEGER NOT NULL,
+    musico_id INTEGER NOT NULL,
+    FOREIGN KEY(cancion_id) REFERENCES canciones(id),
+    FOREIGN KEY(musico_id) REFERENCES musicos(id)
+);
+CREATE TABLE generos (
+    cancion_id INTEGER NOT NULL,
+    genero TEXT NOT NULL,
+    subgenero TEXT NOT NULL,
+    FOREIGN KEY(cancion_id) REFERENCES canciones(id)
 );
 
--- Movies and Ratings
-INSERT INTO movies (title, year) VALUES ("A Few Good Men", 1992);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "A Few Good Men"), 7.7, 218512);
-INSERT INTO movies (title, year) VALUES ("The Shawshank Redemption", 1994);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "The Shawshank Redemption"), 9.3, 2150648);
-INSERT INTO movies (title, year) VALUES ("Toy Story", 1995);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Toy Story"), 8.3, 819238);
-INSERT INTO movies (title, year) VALUES ("Apollo 13", 1995);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Apollo 13"), 7.6, 250710);
-INSERT INTO movies (title, year) VALUES ("Catch Me If You Can", 2002);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Catch Me If You Can"), 8.1, 741363);
-INSERT INTO movies (title, year) VALUES ("Harry Potter and the Chamber of Secrets", 2002);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Harry Potter and the Chamber of Secrets"), 7.4, 504212);
-INSERT INTO movies (title, year) VALUES ("Harry Potter and the Sorcerer's Stone", 2001);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Harry Potter and the Sorcerer's Stone"), 7.6, 582405);
-INSERT INTO movies (title, year) VALUES ("Harry Potter and the Prisoner of Azkaban", 2004);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Harry Potter and the Prisoner of Azkaban"), 7.9, 500820);
-INSERT INTO movies (title, year) VALUES ("The Incredibles", 2004);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "The Incredibles"), 8.0, 616425);
-INSERT INTO movies (title, year) VALUES ("Corpse Bride", 2005);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Corpse Bride"), 7.3, 227219);
-INSERT INTO movies (title, year) VALUES ("Charlie and the Chocolate Factory", 2005);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Charlie and the Chocolate Factory"), 6.6, 396753);
-INSERT INTO movies (title, year) VALUES ("Harry Potter and the Goblet of Fire", 2005);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Harry Potter and the Goblet of Fire"), 7.7, 499613);
-INSERT INTO movies (title, year) VALUES ("The Departed", 2006);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "The Departed"), 8.5, 1099707);
-INSERT INTO movies (title, year) VALUES ("Harry Potter and the Order of the Phoenix", 2007);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Harry Potter and the Order of the Phoenix"), 7.5, 464255);
-INSERT INTO movies (title, year) VALUES ("The Dark Knight", 2008);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "The Dark Knight"), 9.0, 2121210);
-INSERT INTO movies (title, year) VALUES ("Iron Man", 2008);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Iron Man"), 7.9, 884358);
-INSERT INTO movies (title, year) VALUES ("Slumdog Millionaire", 2008);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Slumdog Millionaire"), 8.0, 757439);
-INSERT INTO movies (title, year) VALUES ("Kung Fu Panda", 2008);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Kung Fu Panda"), 7.5, 389857);
-INSERT INTO movies (title, year) VALUES ("Harry Potter and the Half-Blood Prince", 2009);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Harry Potter and the Half-Blood Prince"), 7.6, 428590);
-INSERT INTO movies (title, year) VALUES ("Alice in Wonderland", 2010);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Alice in Wonderland"), 6.4, 363967);
-INSERT INTO movies (title, year) VALUES ("The King's Speech", 2010);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "The King's Speech"), 8.0, 602856);
-INSERT INTO movies (title, year) VALUES ("Harry Potter and the Deathly Hallows: Part 1", 2010);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Harry Potter and the Deathly Hallows: Part 1"), 7.7, 435733);
-INSERT INTO movies (title, year) VALUES ("Shutter Island", 2010);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Shuttler Island"), 8.1, 1031803);
-INSERT INTO movies (title, year) VALUES ("How to Train Your Dragon", 2010);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "How to Train Your Dragon"), 8.1, 623307);
-INSERT INTO movies (title, year) VALUES ("Toy Story 3", 2010);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Toy Story 3"), 8.3, 704300);
-INSERT INTO movies (title, year) VALUES ("Iron Man 2", 2010);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Iron Man 2"), 7.0, 674548);
-INSERT INTO movies (title, year) VALUES ("Inception", 2010);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Inception"), 8.8, 1885009);
-INSERT INTO movies (title, year) VALUES ("Harry Potter and the Deathly Hallows: Part 2", 2011);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Harry Potter and the Deathly Hallows: Part 2"), 8.1, 705872);
-INSERT INTO movies (title, year) VALUES ("X-Men: First Class", 2011);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "X-Men: First Class"), 7.7, 619146);
-INSERT INTO movies (title, year) VALUES ("Looper", 2012);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Looper"), 7.4, 507656);
-INSERT INTO movies (title, year) VALUES ("Django Unchained", 2012);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Django Unchained"), 8.4, 1244109);
-INSERT INTO movies (title, year) VALUES ("Prometheus", 2012);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Prometheus"), 7.0, 545157);
-INSERT INTO movies (title, year) VALUES ("The Avengers", 2012);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "The Avengers"), 8.0, 1203836);
-INSERT INTO movies (title, year) VALUES ("Life of Pi", 2012);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Life of Pi"), 7.9, 545552);
-INSERT INTO movies (title, year) VALUES ("42", 2013);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "42"), 7.5, 79004);
-INSERT INTO movies (title, year) VALUES ("The Wolf of Wall Street", 2013);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "The Wolf of Wall Street"), 8.2, 1064692);
-INSERT INTO movies (title, year) VALUES ("Boyhood", 2014);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Boyhood"), 7.9, 319637);
-INSERT INTO movies (title, year) VALUES ("Interstellar", 2014);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Interstellar"), 8.6, 1340748);
-INSERT INTO movies (title, year) VALUES ("Get on Up", 2014);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Get on Up"), 6.9, 19303);
-INSERT INTO movies (title, year) VALUES ("Draft Day", 2014);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Draft Day"), 6.8, 49763);
-INSERT INTO movies (title, year) VALUES ("The Revenant", 2015);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "The Revenant"), 8.0, 639623);
-INSERT INTO movies (title, year) VALUES ("Alice Through the Looking Glass", 2016);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Alice Through the Looking Glass"), 6.2, 82595);
-INSERT INTO movies (title, year) VALUES ("Message from the King", 2016);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Message from the King"), 6.4, 10031);
-INSERT INTO movies (title, year) VALUES ("Harry Potter: A History of Magic", 2017);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Harry Potter: A History of Magic"), 7.2, 213);
-INSERT INTO movies (title, year) VALUES ("Marshall", 2017);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Marshall"), 7.2, 547247);
-INSERT INTO movies (title, year) VALUES ("Black Panther", 2018);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Black Panther"), 7.3, 546919);
-INSERT INTO movies (title, year) VALUES ("Avengers: Infinity War", 2018);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Avengers: Infinity War"), 8.5, 718385);
-INSERT INTO movies (title, year) VALUES ("Roma", 2018);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Roma"), 7.4, 10594);
-INSERT INTO movies (title, year) VALUES ("Incredibles 2", 2018);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Incredibles 2"), 7.7, 217333);
-INSERT INTO movies (title, year) VALUES ("Eighth Grade", 2018);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Eighth Grade"), 7.5, 328713);
-INSERT INTO movies (title, year) VALUES ("The Professor", 2018);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "The Professor"), 6.7, 12778);
-INSERT INTO movies (title, year) VALUES ("Toy Story 4", 2019);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Toy Story 4"), 8.0, 118112);
-INSERT INTO movies (title, year) VALUES ("Gemini Man", 2019);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Gemini Man"), 5.7, 13752);
-INSERT INTO movies (title, year) VALUES ("Happy Times", 2019);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Happy Times"), 10.0, 6);
-INSERT INTO movies (title, year) VALUES ("Kirklet", 2019);
-INSERT INTO ratings (movie_id, rating, votes) VALUES
-    ((SELECT id FROM movies WHERE title = "Kirklet"), 10.0, 555);
+-- Musicos
+INSERT INTO musicos (nombre, tipo) VALUES ('2 Chainz', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('6ix9ine', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('A Boogie Wit da Hoodie', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('A$AP Ferg', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('A$AP Rocky', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('AC/DC', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('ARTY', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Afrojack', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Air Supply', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Akon', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Alexio', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Anuel AA', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Arcangel', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Ariana Grande', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Arlissa', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Austin Mahone', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Ava Max', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Bad Bunny', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Bazzi vs.', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Bebe Rexha', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Becky Hill', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Billie Eilish', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Brando', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Calvin Harris', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Camila Cabello', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Carlos Vives', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Celia Cruz', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Chino & Nacho', 'duo');
+INSERT INTO musicos (nombre, tipo) VALUES ('Chris Porter', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Cosculluela', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('DJ Snake', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Daddy Yankee', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Danny Ocean', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Darell', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('David Guetta', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('De La Ghetto', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Dimelo Flow', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Disclosure', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Ed Sheeran', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Farruko', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Flo Rida', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Grace', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Halsey', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Herve Pagez', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('J Alvarez', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('J Balvin', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Jason Derulo', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Jax Jones', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('John Lennon', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('John Mayer', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Jon Hopkins', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Journey', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Juan Luis Guerra 4.40', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Juanes', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Justin Bieber', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Justin Quiles', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Justin Timberlake', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('KAROL G', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Khalid', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Kidnap', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Kygo', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Lady Gaga', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Lalo Ebratt', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Little Mix', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Los Amigos Invisibles', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Los Angeles Azules', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Loud Luxury', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Lunay', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('MEDUZA', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Mabel', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Major Lazer', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Maroon 5', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Marshmello', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Megan Thee Stallion', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Meredith Andrews', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Messiah', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Metallica', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Michael Jackson', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Mike WiLL Made-It', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Mohombi', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Natalia Lafourcade', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Natti Natasha', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Nayer', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Ne-Yo', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Nengo Flow', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Nicki Minaj', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Nicky Jam', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Normani', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Nova y Jory', 'duo');
+INSERT INTO musicos (nombre, tipo) VALUES ('PARTYNEXTDOOR', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Paulo Londra', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Pitbull', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Plies', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Queen', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Randy', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Rawayana', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Regard', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Riton', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Robert Palmer', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Robin Schulz', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Sam Feldt', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Sam Smith', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Sech', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Shakira', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Shaun Cassidy', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Shift K3Y', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Soda Stereo', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Starley', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('TOMORROW X TOGETHER', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Tame Impala', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('The Beatles', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('The Black Eyed Peas', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('The Buggles', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('The Chainsmokers', 'banda');
+INSERT INTO musicos (nombre, tipo) VALUES ('Ty Dolla $ign', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Usher', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Vince Staples', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Willy William', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Wisin', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Wyclef Jean', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('ZAYN', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Zara Larsson', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Zion', 'solista');
+INSERT INTO musicos (nombre, tipo) VALUES ('Zion & Lennox', 'duo');
 
--- People
-INSERT INTO people (name, birth) VALUES ("Colin Firth", 1960);
-INSERT INTO people (name, birth) VALUES ("Don Rickles", 1926);
-INSERT INTO people (name, birth) VALUES ("Christopher Nolan", 1970);
-INSERT INTO people (name, birth) VALUES ("Bill Paxton", 1955);
-INSERT INTO people (name, birth) VALUES ("Brad Bird", 1957);
-INSERT INTO people (name, birth) VALUES ("Frank Darabont", 1959);
-INSERT INTO people (name, birth) VALUES ("Gary Sinise", 1955);
-INSERT INTO people (name, birth) VALUES ("James McAvoy", 1979);
-INSERT INTO people (name, birth) VALUES ("Tom Cruise", 1962);
-INSERT INTO people (name, birth) VALUES ("Jim Varney", 1949);
-INSERT INTO people (name, birth) VALUES ("Emma Watson", 1990);
-INSERT INTO people (name, birth) VALUES ("Jennifer Lawrence", 1990);
-INSERT INTO people (name, birth) VALUES ("Emma Stone", 1988);
-INSERT INTO people (name, birth) VALUES ("Mackenzie Foy", 2000);
-INSERT INTO people (name, birth) VALUES ("Anne Hathaway", 1982);
-INSERT INTO people (name, birth) VALUES ("Ethan Hawke", 1970);
-INSERT INTO people (name, birth) VALUES ("Michael Fassbender", 1977);
-INSERT INTO people (name, birth) VALUES ("Tom Hanks", 1956);
-INSERT INTO people (name, birth) VALUES ("Helena Bonham Carter", 1966);
-INSERT INTO people (name, birth) VALUES ("Yimou Zhang", 1951);
-INSERT INTO people (name, birth) VALUES ("Tim Allen", 1953);
-INSERT INTO people (name, birth) VALUES ("Jessica Chastain", 1977);
-INSERT INTO people (name, birth) VALUES ("Johnny Depp", 1963);
-INSERT INTO people (name, birth) VALUES ("Kevin Bacon", 1958);
-INSERT INTO people (name, birth) VALUES ("Leonardo DiCaprio", 1974);
-INSERT INTO people (name, birth) VALUES ("Matthew McConaughey", 1969);
-INSERT INTO people (name, birth) VALUES ("Ellar Coltrane", 1994);
-INSERT INTO people (name, birth) VALUES ("Patricia Arquette", 1968);
-INSERT INTO people (name, birth) VALUES ("Chadwick Boseman", 1977);
-INSERT INTO people (name, birth) VALUES ("Samuel L. Jackson", 1948);
-INSERT INTO people (name, birth) VALUES ("Holly Hunter", 1958);
-INSERT INTO people (name, birth) VALUES ("Jason Lee", 1970);
-INSERT INTO people (name, birth) VALUES ("Craig T. Nelson", 1944);
-INSERT INTO people (name, birth) VALUES ("Richard Griffifths", 1947);
-INSERT INTO people (name, birth) VALUES ("Rupert Grint", 1988);
-INSERT INTO people (name, birth) VALUES ("Daniel Radcliffe", 1989);
+-- Albumes
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('I Don''t Care (with Justin Bieber) [Loud Luxury Remix]', 2019, 39);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Memories (Dillon Francis Remix)', 2019, 72);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('All the Time (Don Diablo Remix)', 2019, 122);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Call You Mine - The Remixes', 2019, 114);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Say My Name (feat. Bebe Rexha & J Balvin) [Lucas & Steve Remix]', 2018, 35);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Signs (Eden Prince Remix)', 2018, 108);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Ruin My Life (Remixes)', 2018, 122);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Happier (Remixes Pt. 2)', 2018, 73);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Side Effects - Remixes', 2018, 114);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Higher Love', 2019, 61);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('bad guy (with Justin Bieber)', 2019, 22);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Promises (with Sam Smith) [Remixes]', 2018, 24);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Beautiful (feat. Camila Cabello) [Bazzi vs. EDX''s Ibiza Sunrise Remix]', 2018, 19);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Talk (Disclosure VIP)', 2019, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Spicy (with Diplo & Charli XCX) [Remixes]', 2019, 44);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Hearts Ain''t Gonna Lie (Remixes, Pt. 1)', 2018, 15);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Snacks', 2019, 48);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Ivy To Roses (Mixtape)', 2019, 70);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Closer (feat. Halsey)', 2016, 114);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('RITMO (Bad Boys For Life)', 2019, 112);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Turn Me On (feat. Vula)', 2019, 98);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Fame', 2008, 62);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('In Your Eyes (feat. Alida)', 2020, 100);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Better Off Without You (feat. Shift K3Y)', 2020, 21);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Lose Control', 2019, 69);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Look Into My Eyes', 2020, 23);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Daydreams (Sultan + Shepard Echoes Of Life Remix)', 2020, 7);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Talk (Alle Farben Remix)', 2019, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('2 Hearts (feat. Gia Koka)', 2020, 101);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Body (feat. brando)', 2017, 67);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Sweet but Psycho', 2018, 17);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?', 2019, 22);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('MAGIC HOUR', 2020, 109);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Nothing but the Beat (Ultimate Edition)', 2012, 35);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Ride It', 2019, 97);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Tusa', 2019, 58);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('everything i wanted', 2019, 22);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Loco Contigo (with J. Balvin & Ozuna feat. Nicky Jam, Natti Natasha, Darell & Sech) [REMIX]', 2019, 31);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Bonita', 2019, 54);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Digging In The Crates: 1997 Vol. 1', 2007, 42);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Open Over Us (Live)', 2019, 75);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Skin (Rinzen Remix)', 2018, 60);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Currents', 2015, 110);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Immunity', 2013, 51);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Love Lies (with Normani)', 2018, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The 20/20 Experience (Deluxe Version)', 2013, 57);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Better', 2018, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Charlie''s Angels (Original Motion Picture Soundtrack)', 2019, 14);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Secret', 2014, 16);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Swalla (feat. Nicki Minaj & Ty Dolla $ign)', 2017, 47);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Up All Night', 2019, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Pink Friday ... Roman Reloaded', 2011, 86);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('LM5 (Deluxe)', 2018, 64);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Raymond v Raymond (Expanded Edition)', 2010, 116);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Scream', 2017, 78);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Departure', 1980, 52);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Jazz (Deluxe Remastered Version)', 1978, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Thriller 25 Super Deluxe Edition', 1982, 78);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Back In Black', 1980, 6);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Oral Fixation, Vol. 2 (Expanded Edition)', 2005, 104);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Jason Derulo', 2010, 47);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('American Teen', 2017, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Queen', 2018, 86);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Sweetener', 2018, 14);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Tattoos', 2013, 47);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('One More Love', 2010, 35);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Suave (Kiss Me) (feat. Mohombi & Pitbull) - Single', 2011, 83);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Everything Is 4', 2015, 47);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Pink Friday (Deluxe)', 2010, 86);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Laundry Service', 2001, 104);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Run Up (feat. PARTYNEXTDOOR & Nicki Minaj)', 2017, 71);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Suncity', 2018, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Woman Like Me (feat. Nicki Minaj)', 2018, 64);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('No Candle No Light (feat. Nicki Minaj)', 2018, 121);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Listen', 2014, 35);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('One More Love', 2010, 35);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('If It Ain''t Love', 2016, 47);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Play Hard (feat. Ne-Yo & Akon) [New Edit]', 2013, 35);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('R&B - 100 Hits - The Greatest R n B album - 100 R & B Classics featuring Usher, Pitbull and Justin Timberlake', 2013, 116);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('For Me+You', 2016, 16);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Ocean Eyes (The Remixes)', 2017, 22);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Wasp', 1980, 105);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Clues', 1980, 99);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Works', 1984, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Age Of Plastic', 1980, 113);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Jason Derulo (International)', 2010, 47);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Pinkprint (Deluxe Edition)', 2014, 86);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Future History (Deluxe Edition)', 2011, 47);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Try Everything (From "Zootopia")', 2016, 104);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('dont smile at me', 2017, 22);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Suncity', 2018, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Real Testament', 2007, 93);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Hot Girl Summer (feat. Nicki Minaj & Ty Dolla $ign)', 2019, 74);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Location', 2017, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Water Dance (feat. Pitbull)', 2015, 29);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Pinkprint (International Deluxe Explicit)', 2014, 86);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Truffle Butter', 2015, 86);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Creed II: The Album', 2018, 79);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Solo Pienso En Ti (feat. De La Ghetto & Justin Quiles)', 2019, 91);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Tu No Metes Cabra Remix', 2017, 18);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('MyBoi (TroyBoi Remix)', 2018, 22);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Lost in Love', 1980, 9);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Double Fantasy', 1980, 49);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Anthology 2', 1996, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('News Of The World (2011 Remaster)', 1977, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Abbey Road (Remastered)', 1969, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Beatles 1967 - 1970 (Remastered)', 1973, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Sheer Heart Attack (2011 Remaster)', 1974, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Queen 40 Limited Edition Collector''s Box Set Vol. 2', 2011, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('News Of The World (Deluxe Remastered Version)', 1977, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('We Will Rock You', 1992, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Queen (2011 Remaster)', 1973, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Queen II (2011 Remaster)', 1974, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Sheer Heart Attack (2011 Remaster)', 1974, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('A Night At The Opera (2011 Remaster)', 1975, 94);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('El Ultimo Concierto B', 1997, 107);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('El Ultimo Concierto A', 1997, 107);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Please Please Me (Remastered)', 1963, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('1 (Remastered)', 2000, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Metallica', 1991, 77);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Metallica', 1991, 77);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Abbey Road (Super Deluxe Edition)', 2019, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Beatles', 2018, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Past Masters (Vols. 1 & 2 / Remastered)', 1988, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Beatles (Remastered)', 1968, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Sgt. Pepper''s Lonely Hearts Club Band (Remastered)', 1967, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Beatles For Sale (Remastered)', 1964, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Rubber Soul (Remastered)', 1965, 111);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('The Essential Michael Jackson', 2005, 78);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Bad 25th Anniversary', 1987, 78);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Metallica', 1991, 77);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Hardwired…To Self-Destruct', 2016, 77);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Reload', 1997, 77);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Kitipun', 2019, 53);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('La Plata (Los Ángeles Azules Remix)', 2019, 54);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Corazón Enamorado', 2019, 53);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('RawayanaLand', 2013, 96);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Literal', 2019, 53);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Andas En Mi Cabeza', 2016, 28);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Asondeguerra Tour (En Vivo Estadio Olímpico De República Dominicana/2012)', 2013, 53);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('La Tierra del Olvido', 1995, 26);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('#Sádico', 2019, 96);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('El Paradise', 2017, 65);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Commercial', 2009, 65);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Trippy Caribbean', 2016, 96);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Un Día Normal', 2002, 54);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Donde Estan Los Ladrones', 1998, 104);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Mi Sangre 2005 Tour Edition', 2005, 54);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Corazón Profundo (Versión Deluxe)', 2013, 26);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Solito (Lonely) [feat. Nicky Jam & Akon]', 2019, 76);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Dime tú', 2019, 33);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Swing', 2019, 33);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Mi Niña Bonita - Reloaded', 2010, 28);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Radio Universo', 2015, 28);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Supremo', 2011, 28);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Me Rehúso', 2016, 33);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Lo Que No Sabes Tu', 2009, 28);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Mi Niña Bonita', 2010, 28);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Mi Niña Bonita - Reloaded', 2010, 28);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('54+1', 2019, 33);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Dembow', 2017, 33);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('El Dorado', 2017, 104);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Eleven', 2020, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Free Spirit', 2019, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Alex Gargolas Greatest Hits', 2013, 95);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Motivando a la Yal', 2004, 124);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('FEFE (feat. Nicki Minaj & Murda Beatz)', 2018, 2);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('El Favor (with Nicky Jam & Sech, feat. Farruko, Zion & Lunay)', 2019, 37);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Exitos', 2016, 87);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Hoy (feat. Daddy Yankee, J-Alvarez & Jory)', 2011, 40);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Mucha Calidad', 2011, 89);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Sola (Remix) [feat. Daddy Yankee, Wisin, Farruko, Zion & Lennox]', 2016, 12);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Blanco Perla', 2016, 30);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Tumba La Casa (Remix) [feat. Daddy Yankee, Nicky Jam, Farruko, Arcangel, De La Ghetto, Zion & Ñengo Flow]', 2015, 11);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('La Pregunta Remix (feat. Tito El Bambino & Daddy Yankee)', 2012, 45);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Michael', 2010, 78);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Exitos Eternos', 2003, 27);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Right Back (feat. A Boogie Wit Da Hoodie)', 2019, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('OTW', 2018, 59);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Invincible', 2001, 78);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('lovely (with Khalid)', 2018, 22);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('when the party''s over', 2018, 22);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Bellyache (Marian Hill Remix)', 2017, 22);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('La Cuba Mía (Original Motion Picture Soundtrack)', 2004, 27);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('La Negra Tiene Tumbao', 2001, 27);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Regalo Del Alma', 2000, 27);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Goodbye (feat. Nicki Minaj & Willy William)', 2018, 47);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Dangerous', 1991, 78);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Bad / Dangerous', 1991, 78);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Dangerous', 1991, 78);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Body on My (feat. Brando, Pitbull & Nicky Jam)', 2019, 67);
+INSERT INTO albumes (titulo, anio, musico_id) VALUES ('Swalla (feat. Nicki Minaj & Ty Dolla $ign) [Wideboys Remix]', 2017, 47);
 
--- Stars
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Tom Hanks"),
-    (SELECT id FROM movies WHERE title = "Toy Story"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Tim Allen"),
-    (SELECT id FROM movies WHERE title = "Toy Story"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Don Rickles"),
-    (SELECT id FROM movies WHERE title = "Toy Story"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Jim Varney"),
-    (SELECT id FROM movies WHERE title = "Toy Story"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Ellar Coltrane"),
-    (SELECT id FROM movies WHERE title = "Boyhood"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Patricia Arquette"),
-    (SELECT id FROM movies WHERE title = "Boyhood"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Ethan Hawke"),
-    (SELECT id FROM movies WHERE title = "Boyhood"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Matthew McConaughey"),
-    (SELECT id FROM movies WHERE title = "Interstellar"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Anne Hathaway"),
-    (SELECT id FROM movies WHERE title = "Interstellar"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Jessica Chastain"),
-    (SELECT id FROM movies WHERE title = "Interstellar"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Mackenzie Foy"),
-    (SELECT id FROM movies WHERE title = "Interstellar"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Leonardo DiCaprio"),
-    (SELECT id FROM movies WHERE title = "Inception"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Leonardo DiCaprio"),
-    (SELECT id FROM movies WHERE title = "The Departed"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Leonardo DiCaprio"),
-    (SELECT id FROM movies WHERE title = "Django Unchained"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Leonardo DiCaprio"),
-    (SELECT id FROM movies WHERE title = "The Wolf of Wall Street"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Leonardo DiCaprio"),
-    (SELECT id FROM movies WHERE title = "Catch Me If You Can"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Leonardo DiCaprio"),
-    (SELECT id FROM movies WHERE title = "The Revenant"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Johnny Depp"),
-    (SELECT id FROM movies WHERE title = "Corpse Bride"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Helena Bonham Carter"),
-    (SELECT id FROM movies WHERE title = "Corpse Bride"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Johnny Depp"),
-    (SELECT id FROM movies WHERE title = "Charlie and the Chocolate Factory"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Helena Bonham Carter"),
-    (SELECT id FROM movies WHERE title = "Charlie and the Chocolate Factory"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Johnny Depp"),
-    (SELECT id FROM movies WHERE title = "Alice in Wonderland"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Helena Bonham Carter"),
-    (SELECT id FROM movies WHERE title = "Alice in Wonderland"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Johnny Depp"),
-    (SELECT id FROM movies WHERE title = "Alice Through the Looking Glass"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Helena Bonham Carter"),
-    (SELECT id FROM movies WHERE title = "Alice Through the Looking Glass"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Johnny Depp"),
-    (SELECT id FROM movies WHERE title = "The Professor"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Helena Bonham Carter"),
-    (SELECT id FROM movies WHERE title = "The King's Speech"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Colin Firth"),
-    (SELECT id FROM movies WHERE title = "The King's Speech"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Kevin Bacon"),
-    (SELECT id FROM movies WHERE title = "X-Men: First Class"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Kevin Bacon"),
-    (SELECT id FROM movies WHERE title = "Apollo 13"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Kevin Bacon"),
-    (SELECT id FROM movies WHERE title = "A Few Good Men"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "James McAvoy"),
-    (SELECT id FROM movies WHERE title = "X-Men: First Class"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Michael Fassbender"),
-    (SELECT id FROM movies WHERE title = "X-Men: First Class"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Jennifer Lawrence"),
-    (SELECT id FROM movies WHERE title = "X-Men: First Class"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Tom Hanks"),
-    (SELECT id FROM movies WHERE title = "Apollo 13"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Bill Paxton"),
-    (SELECT id FROM movies WHERE title = "Apollo 13"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Gary Sinise"),
-    (SELECT id FROM movies WHERE title = "Apollo 13"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Tom Cruise"),
-    (SELECT id FROM movies WHERE title = "A Few Good Men"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Chadwick Boseman"),
-    (SELECT id FROM movies WHERE title = "42"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Chadwick Boseman"),
-    (SELECT id FROM movies WHERE title = "Black Panther"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Chadwick Boseman"),
-    (SELECT id FROM movies WHERE title = "Marshall"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Chadwick Boseman"),
-    (SELECT id FROM movies WHERE title = "Get on Up"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Chadwick Boseman"),
-    (SELECT id FROM movies WHERE title = "Draft Day"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Chadwick Boseman"),
-    (SELECT id FROM movies WHERE title = "Message from the King"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Samuel L. Jackson"),
-    (SELECT id FROM movies WHERE title = "The Incredibles"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Holly Hunter"),
-    (SELECT id FROM movies WHERE title = "The Incredibles"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Jason Lee"),
-    (SELECT id FROM movies WHERE title = "The Incredibles"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Craig T. Nelson"),
-    (SELECT id FROM movies WHERE title = "The Incredibles"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Richard Griffifths"),
-    (SELECT id FROM movies WHERE title = "Harry Potter and the Prisoner of Azkaban"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Rupert Grint"),
-    (SELECT id FROM movies WHERE title = "Harry Potter and the Prisoner of Azkaban"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Daniel Radcliffe"),
-    (SELECT id FROM movies WHERE title = "Harry Potter and the Prisoner of Azkaban"));
-INSERT INTO stars (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Emma Watson"),
-    (SELECT id FROM movies WHERE title = "Harry Potter and the Prisoner of Azkaban"));
+-- Canciones
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('I Don''t Care (with Justin Bieber) - Loud Luxury Remix', 1, 194754, 122.036, 0.748, 0.916, 0.518, -2.634, 0.102, 0.0, 0.0653, 0.0583);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Memories - Dillon Francis Remix', 2, 162600, 99.972, 0.726, 0.815, 0.693, -4.969, 0.0724, 0.00421, 0.357, 0.0373);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('All the Time - Don Diablo Remix', 3, 176616, 124.008, 0.675, 0.931, 0.613, -3.432, 0.0794, 2.33e-05, 0.11, 0.0742);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Call You Mine - Keanu Silva Remix', 4, 169093, 121.956, 0.718, 0.93, 0.277, -3.778, 0.0287, 9.43e-06, 0.204, 0.102);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Say My Name (feat. Bebe Rexha & J Balvin) - Lucas & Steve Remix', 5, 189375, 120.002, 0.678, 0.747, 0.516, -5.289, 0.0395, 0.0, 0.174, 0.165);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Signs - Eden Prince Remix', 6, 172000, 121.993, 0.702, 0.814, 0.503, -7.51, 0.107, 3.03e-05, 0.374, 0.0841);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Ruin My Life - Steve James Remix', 7, 177097, 123.952, 0.723, 0.837, 0.643, -6.487, 0.0103, 0.000477, 0.0834, 0.0389);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Happier - Matt Medved Remix', 8, 170164, 122.032, 0.816, 0.833, 0.793, -5.972, 0.126, 9.09e-06, 0.0625, 0.0511);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Side Effects - Fedde Le Grand Remix', 9, 172360, 126.026, 0.633, 0.854, 0.659, -4.046, 0.0382, 2.83e-05, 0.434, 0.0432);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Higher Love', 10, 228267, 103.952, 0.693, 0.678, 0.404, -7.159, 0.0154, 6.05e-06, 0.101, 0.0324);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('bad guy (with Justin Bieber)', 11, 194840, 135.055, 0.67, 0.453, 0.68, -11.265, 0.252, 0.33, 0.117, 0.295);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Promises (with Sam Smith) - David Guetta Remix', 12, 190417, 125.157, 0.588, 0.697, 0.225, -4.744, 0.186, 0.000219, 0.103, 0.0372);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Beautiful (feat. Camila Cabello) - Bazzi vs. EDX''s Ibiza Sunrise Remix', 13, 187869, 121.975, 0.69, 0.862, 0.453, -4.154, 0.0611, 1.85e-05, 0.238, 0.0944);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Talk - Disclosure VIP', 14, 273229, 128.956, 0.775, 0.867, 0.565, -7.388, 0.0158, 0.0117, 0.0355, 0.204);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Spicy - Majestic Remix', 15, 255861, 121.978, 0.814, 0.838, 0.959, -5.547, 0.001, 0.0223, 0.0185, 0.0763);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hearts Ain''t Gonna Lie - Eden Prince Remix', 16, 238451, 117.833, 0.609, 0.83, 0.604, -3.759, 0.201, 6.18e-05, 0.0321, 0.0793);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Harder', 17, 159753, 104.03, 0.906, 0.832, 0.751, -3.004, 0.0909, 0.0, 0.152, 0.0718);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Don''t Call Me Up', 18, 178480, 98.994, 0.674, 0.881, 0.234, -2.853, 0.296, 3.01e-06, 0.0793, 0.147);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Closer (feat. Halsey)', 19, 244960, 95.01, 0.748, 0.524, 0.661, -5.599, 0.414, 0.0, 0.111, 0.0338);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('RITMO (Bad Boys For Life)', 20, 221714, 104.994, 0.721, 0.716, 0.667, -7.037, 0.0334, 0.00084, 0.237, 0.0657);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Turn Me On (feat. Vula)', 21, 208474, 124.052, 0.737, 0.828, 0.517, -4.711, 0.0149, 0.000583, 0.0862, 0.0396);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Poker Face', 22, 237200, 119.001, 0.851, 0.806, 0.776, -4.618, 0.12, 1.33e-06, 0.121, 0.0786);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('In Your Eyes (feat. Alida)', 23, 208222, 120.019, 0.57, 0.672, 0.448, -5.89, 0.177, 0.0, 0.0768, 0.0723);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Better Off Without You (feat. Shift K3Y)', 24, 198743, 124.004, 0.682, 0.855, 0.304, -3.282, 0.0566, 1e-06, 0.101, 0.0401);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Lose Control', 25, 168387, 123.935, 0.598, 0.526, 0.529, -8.659, 0.129, 0.0, 0.14, 0.0415);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Look Into My Eyes', 26, 154654, 115.987, 0.791, 0.541, 0.433, -7.14, 0.123, 4.74e-05, 0.121, 0.054);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Daydreams - Sultan + Shepard Echoes Of Life Remix', 27, 220205, 121.995, 0.669, 0.793, 0.159, -6.16, 0.0318, 0.0372, 0.555, 0.0403);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Talk - Alle Farben Remix', 28, 167990, 126.015, 0.638, 0.818, 0.489, -4.517, 0.131, 1.78e-05, 0.107, 0.05);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('2 Hearts (feat. Gia Koka)', 29, 186750, 116.524, 0.503, 0.754, 0.597, -3.634, 0.264, 5.85e-05, 0.297, 0.0424);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Body (feat. brando)', 30, 163216, 121.958, 0.752, 0.764, 0.582, -4.399, 0.0476, 9.44e-05, 0.0543, 0.038);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Sweet but Psycho', 31, 187436, 133.002, 0.719, 0.704, 0.628, -4.724, 0.0691, 0.0, 0.166, 0.0476);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('bad guy', 32, 194088, 135.128, 0.701, 0.425, 0.562, -10.965, 0.328, 0.13, 0.1, 0.375);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('9と4分の3番線で君を待つ (Run Away) - Japanese Ver.', 33, 211867, 128.997, 0.63, 0.787, 0.466, -4.302, 0.00489, 0.0, 0.134, 0.103);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Ride It', 35, 157606, 117.948, 0.88, 0.751, 0.884, -4.258, 0.177, 6.43e-05, 0.106, 0.0874);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Tusa', 36, 200960, 101.085, 0.803, 0.715, 0.574, -3.28, 0.295, 0.000134, 0.0574, 0.298);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('everything i wanted', 37, 245426, 120.006, 0.704, 0.225, 0.243, -14.454, 0.902, 0.657, 0.106, 0.0994);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Loco Contigo (with J. Balvin & Ozuna feat. Nicky Jam, Natti Natasha, Darell & Sech) - REMIX', 38, 341875, 96.035, 0.789, 0.694, 0.549, -5.781, 0.0982, 0.0, 0.0962, 0.0729);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Bonita', 39, 147493, 157.985, 0.745, 0.881, 0.961, -2.587, 0.255, 0.0, 0.25, 0.0506);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Not over Yet - Perfecto Edit', 40, 458058, 130.532, 0.559, 0.829, 0.463, -8.149, 0.00496, 0.00597, 0.05, 0.0407);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Open Over Us (Live)', 41, 452389, 143.912, 0.225, 0.501, 0.111, -8.296, 0.112, 0.0, 0.0685, 0.0341);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Skin - Rinzen Remix', 42, 450000, 123.008, 0.777, 0.74, 0.288, -7.928, 0.00192, 0.0828, 0.0825, 0.0454);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Let It Happen', 43, 467587, 125.012, 0.602, 0.881, 0.577, -5.875, 0.00462, 0.0266, 0.111, 0.0443);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Open Eye Signal', 44, 468587, 122.47, 0.798, 0.715, 0.199, -7.103, 0.191, 0.773, 0.112, 0.215);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Love Lies (with Normani)', 45, 201707, 143.955, 0.708, 0.648, 0.338, -5.626, 0.0956, 0.0, 0.134, 0.0449);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Mirrors', 46, 484147, 76.899, 0.574, 0.512, 0.512, -6.664, 0.234, 0.0, 0.0946, 0.0503);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Better', 47, 229413, 97.565, 0.442, 0.585, 0.116, -10.332, 0.0984, 0.391, 0.14, 0.0964);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Bad To You (with Normani & Nicki Minaj)', 48, 171840, 147.983, 0.727, 0.583, 0.629, -7.385, 0.065, 0.0, 0.106, 0.0718);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Swalla (feat. Nicki Minaj & Ty Dolla $ign)', 50, 216409, 98.064, 0.696, 0.817, 0.782, -3.862, 0.075, 0.0, 0.187, 0.109);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Mmm Yeah (feat. Pitbull)', 49, 231625, 125.984, 0.712, 0.922, 0.976, -3.902, 0.00266, 1.9e-06, 0.268, 0.0411);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Up All Night', 51, 157220, 93.989, 0.665, 0.712, 0.669, -7.536, 0.00103, 0.00342, 0.102, 0.0527);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Starships', 52, 210627, 125.008, 0.747, 0.716, 0.751, -2.457, 0.135, 0.0, 0.251, 0.075);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Woman Like Me (feat. Nicki Minaj)', 53, 229720, 75.002, 0.754, 0.854, 0.8, -3.449, 0.177, 0.0, 0.0808, 0.0608);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('DJ Got Us Fallin'' In Love (feat. Pitbull)', 54, 220800, 119.963, 0.663, 0.861, 0.654, -3.398, 0.0338, 0.0, 0.082, 0.109);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Thriller', 55, 358053, 118.421, 0.764, 0.887, 0.721, -3.725, 0.0816, 0.000108, 0.847, 0.0738);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Any Way You Want It', 56, 201693, 138.158, 0.529, 0.932, 0.571, -7.501, 0.00251, 0.00109, 0.136, 0.0488);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Don''t Stop Me Now - 2011 Mix', 57, 209413, 156.271, 0.563, 0.865, 0.601, -5.277, 0.0472, 0.000191, 0.77, 0.16);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Beat It - Single Version', 58, 258040, 138.858, 0.779, 0.867, 0.915, -3.704, 0.0491, 7.98e-06, 0.197, 0.0457);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Back In Black', 59, 255493, 188.386, 0.31, 0.7, 0.763, -5.678, 0.011, 0.00965, 0.0828, 0.047);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hips Don''t Lie (feat. Wyclef Jean)', 60, 218093, 100.024, 0.778, 0.824, 0.756, -5.892, 0.284, 0.0, 0.405, 0.0712);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('In My Head', 61, 199027, 110.009, 0.762, 0.748, 0.851, -4.15, 0.0266, 0.0, 0.348, 0.033);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Young Dumb & Broke', 62, 202547, 136.949, 0.798, 0.539, 0.394, -6.351, 0.199, 1.66e-05, 0.165, 0.0421);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Miami', 63, 190747, 156.941, 0.874, 0.54, 0.723, -7.084, 0.217, 0.00185, 0.562, 0.417);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Chun-Li', 63, 191600, 128.96, 0.69, 0.729, 0.478, -5.08, 0.276, 5.08e-05, 0.106, 0.372);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('LLC', 63, 221853, 153.988, 0.835, 0.756, 0.809, -5.441, 0.0523, 0.028, 0.0606, 0.123);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('the light is coming (feat. Nicki Minaj)', 64, 228373, 99.046, 0.876, 0.55, 0.702, -5.707, 0.0126, 2.84e-05, 0.0272, 0.161);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Turn Me On (feat. Nicki Minaj)', 34, 199680, 127.96, 0.704, 0.793, 0.412, -2.266, 0.0488, 0.0, 0.575, 0.0591);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Trumpets', 65, 217307, 81.897, 0.627, 0.703, 0.64, -4.884, 0.563, 0.0, 0.0962, 0.236);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Sexy Bitch (feat. Akon)', 66, 195853, 130.011, 0.813, 0.627, 0.801, -5.018, 0.076, 0.000616, 0.131, 0.0486);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Suave (Kiss Me) (feat. Mohombi & Pitbull)', 67, 222058, 127.949, 0.732, 0.945, 0.636, -4.056, 0.0351, 0.0, 0.28, 0.137);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Whatcha Say', 61, 221253, 144.036, 0.615, 0.711, 0.711, -5.507, 0.0444, 0.0, 0.145, 0.0779);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Want to Want Me', 68, 207719, 114.025, 0.775, 0.68, 0.656, -5.508, 0.00906, 0.0, 0.109, 0.0629);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Super Bass', 69, 200013, 126.991, 0.72, 0.861, 0.669, -4.339, 0.269, 5.11e-06, 0.601, 0.209);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Whenever, Wherever', 70, 196160, 107.661, 0.793, 0.832, 0.872, -4.862, 0.236, 1.12e-05, 0.202, 0.0406);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Run Up (feat. PARTYNEXTDOOR & Nicki Minaj)', 71, 203180, 108.005, 0.803, 0.743, 0.674, -3.602, 0.105, 2.12e-06, 0.099, 0.0681);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Better', 72, 229320, 97.949, 0.596, 0.552, 0.112, -10.278, 0.0765, 0.334, 0.104, 0.097);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Woman Like Me (feat. Nicki Minaj)', 73, 228207, 150.036, 0.757, 0.849, 0.826, -3.424, 0.173, 0.0, 0.0878, 0.0536);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('No Candle No Light (feat. Nicki Minaj)', 74, 193399, 122.052, 0.612, 0.742, 0.431, -4.198, 0.0176, 0.000102, 0.101, 0.0519);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Suncity (feat. Empress Of)', 72, 189493, 90.027, 0.695, 0.639, 0.344, -6.897, 0.107, 0.000657, 0.118, 0.153);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Sexy Bitch (feat. Akon)', 76, 195853, 130.011, 0.813, 0.627, 0.801, -5.018, 0.076, 0.000616, 0.131, 0.0486);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hey Mama (feat. Nicki Minaj, Bebe Rexha & Afrojack)', 75, 192560, 85.979, 0.596, 0.73, 0.525, -4.091, 0.24, 0.0, 0.325, 0.151);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Where Them Girls At (feat. Nicki Minaj & Flo Rida)', 34, 194840, 129.884, 0.666, 0.876, 0.552, -3.078, 0.055, 0.0, 0.259, 0.0414);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('If It Ain''t Love', 77, 203105, 128.63, 0.503, 0.843, 0.778, -4.991, 0.0487, 0.0, 0.344, 0.316);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Play Hard (feat. Ne-Yo & Akon) - New Edit', 78, 208845, 129.952, 0.723, 0.87, 0.678, -3.013, 0.035, 0.0, 0.656, 0.0435);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('DJ Got Us Fallin'' In Love (feat. Pitbull)', 79, 214280, 120.954, 0.639, 0.907, 0.699, -4.749, 0.0444, 0.0, 0.114, 0.189);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Talk Dirty (feat. 2 Chainz)', 65, 177685, 100.315, 0.76, 0.652, 0.759, -7.321, 0.0348, 0.0, 0.307, 0.232);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Lady (feat. Pitbull)', 80, 211278, 125.958, 0.751, 0.829, 0.672, -4.906, 0.164, 7.71e-05, 0.341, 0.0832);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Ocean Eyes - Blackbear Remix', 81, 195307, 144.98, 0.661, 0.419, 0.145, -9.807, 0.114, 1.19e-05, 0.0848, 0.0404);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Rebel, Rebel', 82, 248314, 143.132, 0.626, 0.455, 0.928, -14.548, 0.215, 4.45e-05, 0.329, 0.137);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Johnny And Mary', 83, 237973, 152.876, 0.666, 0.547, 0.97, -12.841, 0.0287, 0.142, 0.0268, 0.0433);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Radio Ga Ga', 84, 349133, 112.398, 0.762, 0.414, 0.731, -12.036, 0.173, 0.000111, 0.0942, 0.0379);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('You Shook Me All Night Long', 59, 210173, 127.361, 0.532, 0.767, 0.755, -5.509, 0.00287, 0.000513, 0.39, 0.0574);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Video Killed The Radio Star', 85, 252773, 131.165, 0.68, 0.678, 0.251, -11.548, 0.103, 0.00828, 0.204, 0.0754);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Whatcha Say', 86, 221253, 144.036, 0.615, 0.711, 0.711, -5.507, 0.0444, 0.0, 0.145, 0.0779);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Anaconda', 87, 260240, 129.99, 0.963, 0.603, 0.647, -6.224, 0.0673, 5.93e-06, 0.214, 0.18);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('It Girl', 88, 192200, 91.993, 0.668, 0.718, 0.345, -4.736, 0.0165, 0.0, 0.104, 0.0605);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Try Everything - From "Zootopia" Soundtrack', 89, 196707, 115.487, 0.709, 0.614, 0.52, -4.807, 0.024, 0.0, 0.0908, 0.0307);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Winter', 62, 241867, 100.007, 0.678, 0.575, 0.367, -7.086, 0.101, 9.38e-06, 0.116, 0.123);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('my boy', 90, 170852, 89.936, 0.692, 0.394, 0.324, -8.745, 0.472, 0.000191, 0.117, 0.207);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Another Sad Love Song', 62, 244747, 107.014, 0.834, 0.472, 0.517, -7.777, 0.412, 6.76e-05, 0.0836, 0.0873);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Saved', 62, 206533, 81.044, 0.739, 0.448, 0.553, -10.28, 0.189, 0.0, 0.118, 0.138);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Vertigo', 91, 270413, 115.989, 0.487, 0.458, 0.207, -7.761, 0.552, 0.0257, 0.117, 0.0371);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('party favor', 90, 204770, 130.022, 0.826, 0.188, 0.205, -12.181, 0.882, 2.83e-06, 0.103, 0.0883);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Saturday Nights', 91, 209547, 167.908, 0.54, 0.439, 0.371, -8.591, 0.635, 1.93e-05, 0.0993, 0.115);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('bury a friend', 32, 193143, 120.046, 0.905, 0.389, 0.196, -14.505, 0.74, 0.162, 0.106, 0.332);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('you should see me in a crown', 32, 180953, 150.455, 0.678, 0.533, 0.323, -10.485, 0.462, 0.219, 0.139, 0.186);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('all the good girls go to hell', 32, 168840, 185.044, 0.726, 0.444, 0.569, -8.922, 0.283, 0.143, 0.177, 0.372);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hypnotized (feat. Akon)', 92, 188493, 116.59, 0.84, 0.571, 0.617, -7.421, 0.16, 0.0, 0.406, 0.0797);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hot Girl Summer (feat. Nicki Minaj & Ty Dolla $ign)', 93, 199427, 98.985, 0.872, 0.814, 0.57, -4.568, 0.00485, 1.96e-06, 0.214, 0.155);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Location', 94, 217566, 80.028, 0.799, 0.436, 0.311, -9.975, 0.283, 0.000105, 0.0968, 0.379);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('The Water Dance (feat. Pitbull)', 95, 222770, 105.065, 0.88, 0.796, 0.7, -5.537, 0.173, 0.0, 0.199, 0.106);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Anaconda', 96, 260240, 129.994, 0.964, 0.605, 0.646, -6.223, 0.0668, 7.78e-06, 0.214, 0.179);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Truffle Butter', 97, 219227, 105.113, 0.887, 0.673, 0.491, -6.846, 0.0743, 4.06e-05, 0.124, 0.0503);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Play Hard (feat. Ne-Yo & Akon)', 34, 201000, 130.072, 0.691, 0.921, 0.8, -1.702, 0.173, 0.0, 0.331, 0.0533);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Runnin (with A$AP Rocky, A$AP Ferg & Nicki Minaj)', 98, 131674, 123.906, 0.545, 0.975, 0.609, -3.193, 0.17, 0.0, 0.145, 0.454);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Solo Pienso En Ti (feat. De La Ghetto & Justin Quiles)', 99, 268794, 129.978, 0.86, 0.697, 0.586, -4.727, 0.102, 0.0, 0.159, 0.0718);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Tu No Metes Cabra Remix (feat. Daddy Yankee, Anuel AA & Cosculluela)', 100, 331431, 91.97, 0.834, 0.58, 0.481, -3.144, 0.446, 0.0, 0.0719, 0.28);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('MyBoi - TroyBoi Remix', 101, 211304, 92.004, 0.879, 0.58, 0.312, -4.797, 0.00626, 0.0433, 0.0653, 0.0883);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('All Out of Love', 102, 243000, 108.381, 0.512, 0.262, 0.357, -16.875, 0.313, 5.51e-06, 0.456, 0.0276);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Woman', 103, 212933, 79.701, 0.588, 0.656, 0.746, -6.373, 0.378, 0.00227, 0.042, 0.0224);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Watching The Wheels', 103, 239933, 82.933, 0.607, 0.612, 0.272, -8.666, 0.408, 5.2e-06, 0.32, 0.0523);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Real Love - Anthology 2 Version', 104, 234053, 175.818, 0.388, 0.677, 0.424, -7.262, 0.0527, 0.0107, 0.221, 0.0301);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('We Are The Champions - Remastered 2011', 105, 179200, 64.177, 0.268, 0.459, 0.175, -6.94, 0.378, 0.0, 0.118, 0.0346);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Come Together - Remastered 2009', 106, 259947, 165.007, 0.533, 0.376, 0.187, -11.913, 0.0302, 0.248, 0.0926, 0.0393);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Revolution - Remastered 2009', 107, 205293, 121.38, 0.407, 0.834, 0.71, -9.224, 0.0734, 0.00021, 0.241, 0.208);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Killer Queen - Remastered 2011', 108, 179600, 117.218, 0.535, 0.651, 0.612, -6.326, 0.391, 0.0, 0.133, 0.0544);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Under Pressure - Remastered', 109, 248440, 113.809, 0.671, 0.711, 0.466, -7.813, 0.422, 0.0, 0.104, 0.0478);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('We Will Rock You - Remastered', 110, 122067, 81.308, 0.693, 0.497, 0.473, -7.316, 0.679, 0.0, 0.258, 0.119);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('We Are The Champions', 111, 180800, 90.143, 0.281, 0.312, 0.221, -14.576, 0.45, 1.26e-06, 0.0949, 0.033);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Keep Yourself Alive - 2011 Mix', 112, 227467, 134.21, 0.442, 0.736, 0.597, -9.546, 0.257, 7.31e-05, 0.157, 0.0744);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Doing Alright - Remastered 2011', 112, 249213, 93.013, 0.339, 0.286, 0.192, -12.334, 0.752, 2.71e-05, 0.085, 0.0344);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Great King Rat - Remastered 2011', 112, 342880, 135.252, 0.35, 0.845, 0.421, -12.339, 0.0424, 0.000622, 0.111, 0.2);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('My Fairy King - Remastered 2011', 112, 248280, 95.663, 0.3, 0.547, 0.247, -10.124, 0.409, 0.00613, 0.134, 0.0333);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Liar - Remastered 2011', 112, 383907, 79.181, 0.217, 0.784, 0.27, -7.202, 0.00252, 0.0775, 0.195, 0.153);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('The Night Comes Down - Remastered 2011', 112, 263027, 142.792, 0.406, 0.57, 0.642, -12.374, 0.692, 0.00219, 0.396, 0.0633);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Modern Times Rock ''N Roll - Remastered 2011', 112, 108173, 115.75, 0.469, 0.935, 0.6, -9.151, 0.0561, 6.96e-05, 0.831, 0.0734);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Son And Daughter - Remastered 2011', 112, 199533, 144.832, 0.328, 0.723, 0.749, -7.842, 0.13, 0.0857, 0.369, 0.0434);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Jesus - Remastered 2011', 112, 224173, 115.08, 0.367, 0.747, 0.583, -7.065, 0.137, 1.49e-06, 0.181, 0.172);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Seven Seas Of Rhye - Remastered 2011', 112, 76573, 64.517, 0.245, 0.458, 0.0447, -13.372, 0.718, 0.963, 0.154, 0.0409);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Procession - Remastered 2011', 113, 73133, 58.883, 0.415, 0.0725, 0.435, -23.459, 0.699, 0.0472, 0.137, 0.032);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Father To Son - Remastered 2011', 113, 373853, 155.32, 0.155, 0.646, 0.213, -11.086, 0.208, 6.78e-05, 0.188, 0.0541);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('White Queen (As It Began) - Remastered 2011', 113, 273200, 153.293, 0.242, 0.296, 0.172, -12.441, 0.829, 3.79e-05, 0.133, 0.0358);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Some Day One Day - Remastered 2011', 113, 262200, 117.597, 0.337, 0.573, 0.699, -13.872, 0.265, 0.0151, 0.0792, 0.0364);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('The Loser In The End - Remastered 2011', 113, 241187, 145.113, 0.386, 0.813, 0.677, -8.035, 0.0346, 2.68e-06, 0.152, 0.157);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Ogre Battle - Remastered 2011', 113, 248453, 108.592, 0.271, 0.823, 0.255, -9.629, 0.405, 0.00744, 0.55, 0.0928);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('The Fairy Feller''s Master-Stroke - Remastered 2011', 113, 160987, 159.15, 0.441, 0.897, 0.696, -8.628, 0.248, 0.0113, 0.121, 0.0909);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Nevermore - Remastered 2011', 113, 78667, 117.705, 0.366, 0.398, 0.181, -11.527, 0.873, 2.9e-06, 0.13, 0.0367);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('The March Of The Black Queen - 2011 Mix', 113, 392947, 112.307, 0.332, 0.687, 0.136, -8.44, 0.0904, 1.3e-05, 0.64, 0.0787);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Funny How Love Is - Remastered 2011', 113, 169760, 145.482, 0.444, 0.945, 0.392, -8.388, 0.00318, 7.85e-05, 0.346, 0.081);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Seven Seas Of Rhye - Remastered 2011', 113, 168973, 126.894, 0.317, 0.896, 0.421, -6.089, 0.122, 0.0168, 0.253, 0.104);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Brighton Rock - Remastered 2011', 114, 310013, 137.62, 0.354, 0.843, 0.348, -9.17, 0.355, 0.0126, 0.789, 0.378);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Killer Queen - 2011 Mix', 114, 179600, 117.218, 0.535, 0.651, 0.612, -6.326, 0.391, 0.0, 0.133, 0.0544);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Tenement Funster - Remastered 2011', 114, 166853, 84.619, 0.416, 0.69, 0.529, -7.362, 0.0581, 0.000372, 0.345, 0.0337);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Flick Of The Wrist - Remastered 2011', 114, 197293, 148.223, 0.338, 0.834, 0.553, -6.061, 0.0454, 4.68e-05, 0.227, 0.0882);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Lily Of The Valley - Remastered 2011', 114, 104893, 78.916, 0.339, 0.264, 0.416, -10.012, 0.628, 0.0, 0.148, 0.0281);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Now I''m Here - Remastered 2011', 114, 252933, 132.547, 0.492, 0.759, 0.522, -6.938, 0.0321, 0.00224, 0.0988, 0.0511);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('In The Lap Of The Gods - Remastered 2011', 114, 202613, 80.539, 0.326, 0.551, 0.23, -6.43, 0.551, 0.000294, 0.348, 0.0323);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Stone Cold Crazy - Remastered 2011', 114, 133813, 120.361, 0.429, 0.922, 0.439, -6.649, 0.0235, 0.00138, 0.0954, 0.0924);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Dear Friends - Remastered 2011', 114, 67573, 107.711, 0.317, 0.0455, 0.571, -16.092, 0.88, 0.0, 0.172, 0.0344);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Misfire - Remastered 2011', 114, 109653, 126.343, 0.614, 0.84, 0.961, -7.006, 0.0808, 0.0307, 0.431, 0.03);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Bring Back That Leroy Brown - Remastered 2011', 114, 135307, 118.486, 0.702, 0.641, 0.863, -5.594, 0.399, 0.0, 0.0763, 0.0879);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('She Makes Me (Stormtrooper In Stilettos) - Remastered 2011', 114, 249200, 77.031, 0.461, 0.533, 0.371, -7.677, 0.17, 0.00021, 0.119, 0.0257);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('In The Lap Of The Gods... Revisited - Remastered 2011', 114, 226813, 132.074, 0.41, 0.575, 0.503, -8.609, 0.408, 0.0, 0.291, 0.0368);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Death On Two Legs (Dedicated To...) - Remastered 2011', 115, 223920, 124.767, 0.373, 0.691, 0.499, -6.219, 0.362, 4.03e-05, 0.133, 0.0554);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Disco Eterno', 116, 455933, 150.143, 0.481, 0.755, 0.356, -10.434, 0.0117, 0.546, 0.99, 0.0363);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Planeador', 116, 265893, 128.706, 0.175, 0.356, 0.173, -10.809, 0.0934, 0.491, 0.66, 0.0351);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Luna Roja', 116, 336240, 92.95, 0.348, 0.661, 0.142, -8.402, 0.00496, 0.194, 0.718, 0.0286);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Te Para Tres', 116, 152027, 99.649, 0.424, 0.245, 0.211, -15.026, 0.0398, 0.0, 0.882, 0.0308);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Cuando Pase El Temblor - En Vivo', 116, 294800, 94.031, 0.656, 0.686, 0.382, -10.614, 0.00351, 0.00749, 0.825, 0.0323);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Claroscuro', 116, 336333, 119.925, 0.469, 0.906, 0.318, -10.048, 0.00412, 0.765, 0.85, 0.0865);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Persiana Americana', 116, 283067, 100.227, 0.507, 0.844, 0.314, -8.679, 0.00389, 0.342, 0.991, 0.0385);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Un Millon De Años Luz', 116, 355933, 95.01, 0.389, 0.767, 0.441, -7.849, 0.0178, 0.408, 0.946, 0.0334);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Primavera 0', 116, 265333, 133.913, 0.231, 0.855, 0.101, -8.246, 9.37e-05, 0.561, 0.988, 0.0431);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Cae El Sol', 116, 290600, 98.048, 0.472, 0.687, 0.245, -9.087, 0.000306, 0.032, 0.617, 0.0285);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('De Música Ligera (Live)', 116, 293107, 124.226, 0.324, 0.858, 0.244, -8.243, 0.0219, 0.0439, 0.7, 0.122);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('En La Ciudad De La Furia - Remasterizado 2007', 117, 397827, 122.075, 0.496, 0.909, 0.54, -6.165, 0.0032, 0.0746, 0.988, 0.0461);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('El Rito - Remasterizado 2007', 117, 424907, 117.312, 0.491, 0.808, 0.335, -6.275, 0.0269, 0.0014, 0.95, 0.0367);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hombre Al Agua - Remasterizado 2007', 117, 389427, 96.986, 0.488, 0.667, 0.331, -7.051, 0.0134, 0.095, 0.918, 0.0285);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('En El Séptimo Día - Remasterizado 2007', 117, 297440, 107.314, 0.483, 0.848, 0.612, -6.17, 1.48e-05, 0.0248, 0.985, 0.033);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Canción Animal - Remasterizado 2007', 117, 257800, 105.086, 0.573, 0.779, 0.669, -6.683, 0.0206, 0.0552, 0.947, 0.0266);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Trátame Suavemente - Remasterizado 2007', 117, 244200, 104.523, 0.47, 0.576, 0.0878, -8.687, 0.181, 0.299, 0.744, 0.0289);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Paseando Por Roma - Remasterizado 2007', 117, 223067, 127.879, 0.459, 0.793, 0.336, -6.79, 0.00011, 0.152, 0.701, 0.0407);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Lo Que Sangra (La Cúpula) - Remasterizado 2007', 117, 316827, 102.931, 0.381, 0.87, 0.634, -5.804, 0.0302, 0.00973, 0.818, 0.042);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Zoom - Remasterizado 2007', 117, 214667, 94.261, 0.631, 0.871, 0.855, -7.161, 0.0452, 0.00952, 0.966, 0.0344);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Signos - Remasterizada 2007', 117, 271400, 122.701, 0.518, 0.712, 0.509, -9.269, 0.143, 0.0629, 0.612, 0.0297);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Ella Usó Mi Cabeza Como Un Revólver - Remasterizado 2007', 117, 278667, 82.711, 0.477, 0.723, 0.27, -5.93, 0.0111, 0.00972, 0.919, 0.0259);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('I Saw Her Standing There - Remastered 2009', 118, 173947, 160.109, 0.491, 0.801, 0.971, -9.835, 0.27, 0.0, 0.0665, 0.0361);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('I Want To Hold Your Hand - Remastered 2015', 119, 145747, 130.726, 0.49, 0.715, 0.866, -5.549, 0.386, 0.0, 0.311, 0.0476);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Nothing Else Matters', 120, 388733, 142.171, 0.558, 0.364, 0.17, -11.258, 0.0505, 5.02e-06, 0.0753, 0.0265);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Enter Sandman', 120, 331573, 123.331, 0.579, 0.824, 0.635, -8.71, 0.00206, 0.00903, 0.059, 0.03);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Enter Sandman', 121, 331573, 123.331, 0.579, 0.824, 0.635, -8.71, 0.00206, 0.00903, 0.059, 0.03);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Come Together - 2019 Mix', 122, 260200, 164.891, 0.536, 0.36, 0.147, -10.973, 0.0823, 0.167, 0.0996, 0.0408);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Back In The U.S.S.R. - 2018 Mix', 123, 163467, 142.657, 0.51, 0.893, 0.934, -9.267, 0.00102, 5.85e-05, 0.201, 0.0342);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('The Unforgiven', 121, 387133, 139.444, 0.539, 0.597, 0.251, -9.581, 0.0108, 0.00552, 0.134, 0.0258);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Sad But True', 121, 324560, 89.232, 0.632, 0.845, 0.433, -6.336, 0.000773, 0.00152, 0.0618, 0.0333);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hey Jude - Remastered 2009', 124, 429933, 147.114, 0.399, 0.573, 0.649, -9.44, 0.0293, 2.83e-05, 0.0914, 0.0253);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Helter Skelter - Remastered 2009', 125, 269787, 167.518, 0.166, 0.831, 0.281, -8.469, 0.000606, 0.846, 0.811, 0.0894);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('A Day In The Life - Remastered 2009', 126, 337413, 163.219, 0.364, 0.457, 0.175, -14.162, 0.29, 0.000106, 0.922, 0.0675);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Eight Days A Week - Remastered 2009', 127, 163600, 138.134, 0.652, 0.583, 0.744, -7.811, 0.412, 0.0, 0.119, 0.038);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('In My Life - Remastered 2009', 128, 146333, 103.239, 0.688, 0.435, 0.435, -11.359, 0.449, 0.0, 0.113, 0.0323);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Smooth Criminal - Radio Edit', 129, 257240, 118.185, 0.854, 0.957, 0.628, -6.07, 0.156, 0.622, 0.308, 0.0705);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Billie Jean', 58, 293827, 117.046, 0.92, 0.654, 0.847, -3.051, 0.0236, 0.0158, 0.0359, 0.0401);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Bad - 2012 Remaster', 130, 247360, 114.091, 0.787, 0.889, 0.394, -3.786, 0.00462, 0.423, 0.0665, 0.0397);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Enter Sandman', 131, 331267, 123.257, 0.577, 0.828, 0.604, -8.691, 0.00213, 0.0114, 0.0581, 0.0298);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hardwired', 132, 191332, 185.364, 0.13, 0.991, 0.505, -3.126, 1.15e-05, 0.00412, 0.225, 0.0604);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Spit Out the Bone', 132, 429199, 167.949, 0.157, 0.987, 0.462, -3.739, 9.25e-06, 0.0628, 0.151, 0.091);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Now That We''re Dead', 132, 419075, 128.304, 0.566, 0.951, 0.345, -3.591, 0.000101, 0.103, 0.266, 0.0464);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('The Unforgiven II', 133, 396440, 132.978, 0.49, 0.884, 0.254, -4.533, 0.000514, 0.00177, 0.27, 0.0428);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('The Unforgiven', 131, 386493, 139.261, 0.54, 0.584, 0.244, -9.579, 0.0108, 0.00296, 0.253, 0.0254);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Kitipun', 134, 216947, 132.011, 0.857, 0.676, 0.747, -5.973, 0.405, 0.0, 0.0951, 0.0316);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('La Plata (Los Ángeles Azules Remix) (Feat. Los Ángeles Azules, Lalo Ebratt)', 135, 219107, 84.001, 0.719, 0.665, 0.906, -5.409, 0.0727, 0.0, 0.33, 0.0492);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Corazón Enamorado', 136, 189520, 125.04, 0.879, 0.488, 0.888, -4.758, 0.763, 3.94e-06, 0.141, 0.0364);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Mamita (feat. Natalia Lafourcade)', 137, 267200, 118.995, 0.817, 0.526, 0.606, -10.391, 0.0637, 0.000459, 0.107, 0.0374);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Kitipun', 138, 216533, 131.979, 0.86, 0.666, 0.743, -5.957, 0.373, 0.0, 0.102, 0.0332);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Andas En Mi Cabeza', 139, 247493, 104.114, 0.671, 0.954, 0.556, -1.87, 0.0244, 0.0, 0.111, 0.13);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Lámpara Pa'' Mis Pies', 138, 180267, 134.97, 0.72, 0.878, 0.966, -3.591, 0.665, 0.0, 0.093, 0.0703);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('La Bilirrubina - En Vivo Estadio Olímpico De República Dominicana/2012', 140, 232880, 138.264, 0.585, 0.977, 0.801, -3.57, 0.622, 0.0, 0.328, 0.0615);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Pa'' Mayté', 141, 188720, 123.851, 0.716, 0.871, 0.967, -7.336, 0.0287, 6.32e-06, 0.117, 0.0606);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('La Tierra del Olvido', 141, 265800, 100.854, 0.663, 0.605, 0.836, -8.534, 0.437, 0.0, 0.0894, 0.0588);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('#Sádico', 142, 344947, 122.006, 0.805, 0.622, 0.716, -10.902, 0.274, 0.000838, 0.102, 0.141);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Espérame Feat. Elastic Bond', 143, 255234, 119.965, 0.741, 0.837, 0.78, -6.814, 0.0498, 4.59e-06, 0.207, 0.0349);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Vivire Para Ti', 144, 207213, 111.998, 0.727, 0.714, 0.96, -6.284, 0.0598, 3.58e-05, 0.101, 0.0288);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Palmera del Desierto', 145, 215319, 104.989, 0.679, 0.913, 0.675, -5.659, 0.0158, 0.00705, 0.668, 0.0473);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Suncity (feat. Empress Of)', 91, 189493, 90.045, 0.694, 0.63, 0.341, -6.84, 0.0998, 0.000635, 0.12, 0.162);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('American Teen', 62, 250747, 100.436, 0.658, 0.623, 0.207, -6.934, 0.0683, 0.0, 0.321, 0.0398);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Es Por Tí', 146, 250693, 129.943, 0.696, 0.758, 0.859, -6.076, 0.17, 3.33e-05, 0.189, 0.0264);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Inevitable', 147, 192867, 91.976, 0.595, 0.461, 0.338, -7.786, 0.269, 0.000149, 0.123, 0.0641);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Volverte A Ver', 148, 217547, 85.007, 0.611, 0.697, 0.749, -4.939, 0.0523, 0.0, 0.179, 0.0302);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Volví a Nacer', 149, 222213, 97.98, 0.588, 0.812, 0.512, -4.172, 0.0171, 0.0, 0.111, 0.0429);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Solito (Lonely) [feat. Nicky Jam & Akon]', 150, 230127, 98.019, 0.732, 0.871, 0.564, -1.406, 0.192, 0.0, 0.222, 0.0418);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Dime tú', 151, 210302, 117.98, 0.831, 0.648, 0.171, -8.433, 0.581, 0.0, 0.114, 0.0438);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Swing (Bonus Track)', 152, 155058, 106.486, 0.729, 0.616, 0.532, -6.422, 0.458, 0.0, 0.082, 0.249);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Bailar Contigo', 149, 252120, 100.019, 0.576, 0.843, 0.411, -5.034, 0.0159, 0.0, 0.0972, 0.0419);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Niña Bonita', 153, 216787, 120.022, 0.676, 0.91, 0.716, -5.096, 0.257, 0.0, 0.153, 0.132);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Tu Amor, More, More', 154, 209373, 105.018, 0.749, 0.952, 0.919, -2.027, 0.107, 1.11e-05, 0.0394, 0.0913);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('El Poeta', 155, 237907, 120.03, 0.744, 0.727, 0.728, -6.036, 0.301, 0.0, 0.237, 0.0492);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Me Rehúso', 156, 205741, 104.827, 0.746, 0.794, 0.447, -6.331, 0.0258, 0.0, 0.0497, 0.0698);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Lo Que No Sabes Tú', 157, 231967, 160.027, 0.704, 0.903, 0.879, -5.329, 0.197, 0.0, 0.142, 0.0758);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Niña Bonita', 158, 215827, 120.014, 0.676, 0.917, 0.727, -4.897, 0.285, 0.0, 0.176, 0.125);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Tu Angelito', 159, 237680, 118.047, 0.834, 0.865, 0.914, -6.424, 0.37, 0.0, 0.209, 0.0459);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Me Rehúso', 160, 205715, 104.823, 0.744, 0.804, 0.426, -6.327, 0.0231, 0.0, 0.0494, 0.0677);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Dembow', 161, 215083, 99.983, 0.802, 0.744, 0.45, -5.968, 0.0807, 0.0, 0.0917, 0.078);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Perro Fiel (feat. Nicky Jam)', 162, 195213, 183.817, 0.75, 0.76, 0.893, -4.836, 0.187, 0.0, 0.0548, 0.198);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Eleven', 163, 206361, 129.004, 0.701, 0.396, 0.115, -10.182, 0.112, 0.0209, 0.223, 0.119);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Outta My Head (with John Mayer)', 164, 177067, 103.012, 0.729, 0.545, 0.514, -7.818, 0.0174, 0.000274, 0.369, 0.0316);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Talk (feat. Disclosure)', 164, 197573, 135.984, 0.901, 0.4, 0.346, -8.575, 0.051, 0.0, 0.0599, 0.126);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Right Back', 164, 215227, 97.032, 0.789, 0.427, 0.605, -9.918, 0.0649, 3.62e-05, 0.171, 0.308);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Yo Voy (feat. Daddy Yankee)', 166, 232020, 95.06, 0.808, 0.697, 0.554, -5.899, 0.041, 0.0, 0.0546, 0.241);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('FEFE (feat. Nicki Minaj & Murda Beatz)', 167, 179405, 125.978, 0.931, 0.387, 0.376, -9.127, 0.088, 0.0, 0.136, 0.412);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('El Favor (with Nicky Jam & Sech, feat. Farruko, Zion & Lunay)', 168, 233113, 87.988, 0.747, 0.647, 0.478, -3.234, 0.113, 0.0, 0.112, 0.0737);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('En La Cama (feat. Daddy Yankee)', 169, 157023, 104.072, 0.855, 0.912, 0.885, -4.832, 0.183, 0.0, 0.122, 0.145);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hoy (feat. Daddy Yankee, J-Alvarez & Jory)', 170, 293773, 92.04, 0.744, 0.837, 0.706, -5.082, 0.336, 0.0, 0.229, 0.0703);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Aprovecha (feat. Daddy Yankee)', 171, 222240, 172.014, 0.624, 0.772, 0.589, -4.687, 0.178, 0.0, 0.11, 0.165);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Sola (Remix) [feat. Daddy Yankee, Wisin, Farruko, Zion & Lennox]', 172, 307910, 169.801, 0.639, 0.869, 0.767, -4.024, 0.27, 0.0, 0.0802, 0.147);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Te busco (feat. Nicky Jam)', 173, 233667, 88.95, 0.743, 0.773, 0.794, -4.787, 0.202, 0.0, 0.0896, 0.109);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Donde Estan Las Gatas (feat. Nicky Jam)', 165, 170006, 109.957, 0.836, 0.961, 0.76, -2.679, 0.194, 0.0, 0.074, 0.0635);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Tumba La Casa (Remix) [feat. Daddy Yankee, Nicky Jam, Farruko, Arcangel, De La Ghetto, Zion & Ñengo Flow]', 174, 477675, 166.001, 0.774, 0.654, 0.846, -6.932, 0.192, 0.0, 0.303, 0.234);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('La Pregunta Remix (feat. Tito El Bambino & Daddy Yankee)', 175, 274027, 171.962, 0.738, 0.726, 0.836, -5.318, 0.0627, 0.0, 0.288, 0.0735);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Hold My Hand', 176, 212227, 90.017, 0.606, 0.72, 0.381, -5.842, 0.191, 0.0, 0.108, 0.0374);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('La Vida Es Un Carnaval', 177, 277000, 104.056, 0.813, 0.735, 0.853, -4.982, 0.482, 0.00187, 0.285, 0.0776);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('P.Y.T. (Pretty Young Thing)', 58, 238733, 127.273, 0.888, 0.815, 0.961, -4.909, 0.23, 0.000424, 0.127, 0.0404);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Right Back (feat. A Boogie Wit Da Hoodie)', 178, 255000, 97.001, 0.786, 0.428, 0.556, -10.011, 0.0933, 1.1e-06, 0.156, 0.31);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('OTW', 179, 263014, 72.989, 0.652, 0.678, 0.28, -6.183, 0.183, 3.26e-05, 0.106, 0.0541);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Whatever Happens', 180, 295667, 97.011, 0.677, 0.741, 0.565, -2.829, 0.371, 2.37e-06, 0.103, 0.0743);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('8', 32, 173202, 62.446, 0.735, 0.235, 0.462, -13.239, 0.698, 0.00604, 0.107, 0.315);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('i love you', 32, 291796, 137.446, 0.421, 0.131, 0.12, -18.435, 0.952, 0.00453, 0.109, 0.0382);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('goodbye', 32, 119410, 74.318, 0.153, 0.138, 0.0503, -21.877, 0.837, 0.55, 0.254, 0.0503);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('xanny', 32, 243725, 111.554, 0.521, 0.125, 0.0528, -17.832, 0.751, 0.00207, 0.265, 0.239);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('ocean eyes', 90, 200379, 144.892, 0.511, 0.363, 0.169, -7.65, 0.816, 0.0317, 0.084, 0.041);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('hostage', 90, 229426, 129.565, 0.427, 0.123, 0.0394, -15.228, 0.868, 3.12e-05, 0.0732, 0.0497);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('&burn (with Vince Staples)', 90, 179016, 82.531, 0.776, 0.379, 0.346, -9.351, 0.213, 0.00175, 0.0969, 0.331);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('lovely (with Khalid)', 181, 200186, 115.284, 0.351, 0.296, 0.12, -10.109, 0.934, 0.0, 0.095, 0.0333);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Therapy', 62, 257960, 92.988, 0.707, 0.484, 0.43, -6.579, 0.891, 0.00344, 0.256, 0.0481);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('idontwannabeyouanymore', 90, 203569, 170.163, 0.483, 0.412, 0.247, -8.461, 0.737, 0.0, 0.116, 0.0402);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('when the party''s over', 182, 199931, 124.001, 0.498, 0.104, 0.205, -14.08, 0.979, 7.86e-05, 0.0895, 0.0621);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Bellyache - Marian Hill Remix', 183, 220800, 100.045, 0.832, 0.368, 0.2, -8.627, 0.2, 0.0513, 0.353, 0.133);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('my strange addiction', 32, 179889, 100.029, 0.939, 0.305, 0.563, -10.952, 0.35, 0.000169, 0.105, 0.354);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('ilomilo', 32, 156371, 120.02, 0.855, 0.423, 0.572, -15.044, 0.724, 0.469, 0.0896, 0.0585);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('listen before i go', 32, 242652, 79.764, 0.319, 0.0561, 0.082, -23.023, 0.935, 0.00384, 0.388, 0.045);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('La Cuba Mía - En Vivo', 184, 284706, 168.301, 0.514, 0.705, 0.832, -6.841, 0.209, 0.0, 0.743, 0.0895);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('La Negra Tiene Tumbao', 185, 253347, 110.726, 0.799, 0.843, 0.96, -4.424, 0.0338, 3.33e-05, 0.199, 0.053);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Rie y Llora', 186, 250373, 128.023, 0.833, 0.918, 0.967, -4.401, 0.0646, 2.49e-05, 0.147, 0.0327);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Goodbye (feat. Nicki Minaj & Willy William)', 187, 195419, 103.028, 0.643, 0.904, 0.481, -3.694, 0.0776, 0.0, 0.189, 0.0739);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Black Or White', 188, 254933, 115.029, 0.518, 0.9, 0.872, -3.748, 0.172, 0.0315, 0.0713, 0.0933);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Jam', 189, 338173, 116.273, 0.884, 0.96, 0.617, -4.613, 0.0487, 0.0228, 0.271, 0.0721);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Remember The Time', 188, 239227, 108.002, 0.831, 0.921, 0.794, -2.383, 0.153, 0.00213, 0.305, 0.0581);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Heal The World', 189, 384307, 80.923, 0.534, 0.485, 0.102, -8.045, 0.537, 1.79e-06, 0.104, 0.0467);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Remember the Time', 190, 239227, 108.002, 0.831, 0.921, 0.794, -2.383, 0.153, 0.00213, 0.305, 0.0581);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Jam', 190, 338173, 116.273, 0.884, 0.96, 0.617, -4.613, 0.0487, 0.0228, 0.271, 0.0721);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Dangerous', 190, 417733, 112.959, 0.943, 0.708, 0.581, -4.686, 0.025, 2.33e-05, 0.0846, 0.116);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Body on My (feat. Brando, Pitbull & Nicky Jam)', 191, 192507, 121.985, 0.744, 0.726, 0.687, -4.675, 0.0399, 0.0, 0.374, 0.0463);
+INSERT INTO canciones (titulo, album_id, duracion_ms, tempo, bailabilidad, energia, valencia, sonoridad, acustica, instrumentalidad, vivacidad, locuacidad) VALUES ('Swalla (feat. Nicki Minaj and Ty Dolla $ign) - Wideboys Remix', 192, 196000, 120.09, 0.72, 0.791, 0.791, -4.384, 0.101, 0.0, 0.0582, 0.0895);
 
--- Directors
-INSERT INTO directors (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Christopher Nolan"),
-    (SELECT id FROM movies WHERE title = "The Dark Knight"));
-INSERT INTO directors (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Yimou Zhang"),
-    (SELECT id FROM movies WHERE title = "Happy Times"));
-INSERT INTO directors (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Brad Bird"),
-    (SELECT id FROM movies WHERE title = "Incredibles 2"));
-INSERT INTO directors (person_id, movie_id) VALUES (
-    (SELECT id FROM people WHERE name = "Frank Darabont"),
-    (SELECT id FROM movies WHERE title = "The Shawshank Redemption"));
+-- Popularidad
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (1, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (2, 67);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (3, 70);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (4, 60);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (5, 65);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (6, 56);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (7, 58);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (8, 59);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (9, 63);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (10, 87);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (11, 83);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (12, 63);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (13, 56);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (14, 60);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (15, 48);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (16, 65);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (17, 62);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (18, 85);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (19, 85);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (20, 96);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (21, 86);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (22, 69);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (23, 74);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (24, 68);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (25, 91);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (26, 48);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (27, 59);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (28, 56);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (29, 70);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (30, 63);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (31, 87);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (32, 95);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (33, 48);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (34, 94);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (35, 98);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (36, 97);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (37, 80);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (38, 78);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (39, 20);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (40, 50);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (41, 45);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (42, 75);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (43, 53);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (44, 79);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (45, 77);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (46, 76);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (47, 76);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (48, 76);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (49, 64);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (50, 87);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (51, 69);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (52, 76);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (53, 78);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (54, 68);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (55, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (56, 75);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (57, 77);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (58, 83);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (59, 80);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (60, 64);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (61, 83);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (62, 46);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (63, 72);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (64, 55);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (65, 44);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (66, 64);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (67, 68);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (68, 72);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (69, 54);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (70, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (71, 76);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (72, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (73, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (74, 7);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (75, 81);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (76, 70);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (77, 4);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (78, 65);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (79, 18);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (80, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (81, 69);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (82, 60);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (83, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (84, 44);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (85, 67);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (86, 3);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (87, 73);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (88, 18);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (89, 6);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (90, 3);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (91, 78);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (92, 70);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (93, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (94, 49);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (95, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (96, 2);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (97, 65);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (98, 80);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (99, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (100, 75);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (101, 67);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (102, 76);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (103, 72);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (104, 87);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (105, 84);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (106, 86);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (107, 65);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (108, 79);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (109, 63);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (110, 44);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (111, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (112, 64);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (113, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (114, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (115, 68);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (116, 7);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (117, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (118, 67);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (119, 1);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (121, 1);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (122, 76);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (123, 79);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (124, 68);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (125, 21);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (126, 35);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (127, 70);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (129, 42);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (130, 42);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (131, 37);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (132, 35);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (133, 35);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (134, 34);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (135, 33);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (136, 34);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (137, 33);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (138, 34);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (139, 33);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (140, 34);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (141, 35);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (142, 33);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (143, 33);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (144, 33);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (145, 35);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (146, 35);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (147, 36);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (148, 33);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (149, 38);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (150, 37);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (151, 50);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (152, 33);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (153, 35);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (154, 34);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (155, 36);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (156, 33);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (157, 36);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (158, 32);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (159, 32);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (160, 32);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (161, 30);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (162, 34);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (163, 46);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (170, 3);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (175, 46);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (176, 46);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (177, 41);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (178, 46);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (179, 47);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (180, 54);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (181, 41);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (182, 50);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (183, 41);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (184, 53);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (185, 51);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (186, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (187, 74);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (188, 69);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (189, 73);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (190, 23);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (191, 59);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (192, 52);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (193, 15);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (194, 12);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (195, 39);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (196, 62);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (197, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (198, 65);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (199, 73);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (200, 47);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (201, 81);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (202, 67);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (203, 79);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (204, 56);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (205, 51);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (206, 50);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (207, 7);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (208, 73);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (209, 60);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (210, 51);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (211, 49);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (212, 58);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (213, 54);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (214, 72);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (215, 52);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (216, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (217, 60);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (218, 58);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (219, 53);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (220, 56);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (221, 2);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (222, 45);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (223, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (224, 72);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (225, 72);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (226, 68);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (227, 51);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (228, 65);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (229, 68);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (230, 75);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (231, 9);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (232, 57);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (233, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (235, 51);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (236, 11);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (238, 2);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (240, 74);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (241, 70);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (242, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (243, 83);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (244, 75);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (245, 82);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (246, 70);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (247, 66);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (248, 15);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (249, 83);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (250, 63);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (251, 53);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (252, 58);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (253, 74);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (254, 58);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (255, 68);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (256, 61);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (257, 47);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (258, 61);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (259, 57);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (260, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (261, 77);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (262, 78);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (263, 46);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (264, 80);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (265, 85);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (266, 77);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (267, 83);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (268, 85);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (269, 79);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (270, 68);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (271, 89);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (272, 65);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (273, 85);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (274, 26);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (275, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (276, 82);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (277, 81);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (278, 81);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (279, 20);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (280, 55);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (281, 51);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (282, 71);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (287, 69);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (288, 58);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (289, 56);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (290, 53);
+INSERT INTO popularidad (cancion_id, popularidad) VALUES (291, 43);
+
+-- Colaboraciones
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (1, 55);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (5, 20);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (5, 46);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (11, 55);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (12, 102);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (13, 25);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (19, 43);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (24, 106);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (30, 23);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (37, 34);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (37, 82);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (37, 103);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (44, 88);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (47, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (47, 88);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (48, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (48, 115);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (49, 92);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (52, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (53, 92);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (59, 120);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (65, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (66, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (68, 10);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (69, 80);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (69, 92);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (74, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (74, 90);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (76, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (77, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (79, 10);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (80, 8);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (80, 20);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (80, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (81, 41);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (81, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (83, 10);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (83, 84);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (84, 92);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (85, 1);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (86, 92);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (107, 10);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (108, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (108, 115);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (110, 92);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (113, 10);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (113, 84);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (114, 4);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (114, 5);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (114, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (115, 36);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (115, 56);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (116, 12);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (116, 30);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (116, 32);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (210, 63);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (210, 66);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (212, 81);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (229, 10);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (229, 87);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (242, 87);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (244, 50);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (245, 38);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (247, 32);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (248, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (249, 68);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (249, 87);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (249, 103);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (249, 123);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (250, 32);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (251, 32);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (252, 32);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (253, 32);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (253, 40);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (253, 119);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (253, 123);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (254, 87);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (255, 87);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (256, 13);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (256, 32);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (256, 36);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (256, 40);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (256, 85);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (256, 87);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (256, 123);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (257, 32);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (261, 3);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (270, 117);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (271, 59);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (282, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (282, 118);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (290, 23);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (290, 87);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (290, 92);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (291, 86);
+INSERT INTO colaboraciones (cancion_id, musico_id) VALUES (291, 115);
+
+-- Generos
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (1, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (1, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (2, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (2, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (3, 'edm', 'big room');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (3, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (3, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (4, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (5, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (5, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (6, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (7, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (8, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (9, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (10, 'edm', 'big room');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (10, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (10, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (10, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (10, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (10, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (10, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (10, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (11, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (11, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (11, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (11, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (12, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (13, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (14, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (15, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (16, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (17, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (17, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (18, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (18, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (18, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (18, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (18, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (18, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (19, 'rap', 'southern hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (20, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (20, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (20, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (20, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (20, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (20, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (20, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (21, 'edm', 'big room');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (21, 'edm', 'electro house');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (21, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (21, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (21, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (21, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (21, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (21, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (22, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (22, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (23, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (23, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (24, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (24, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (25, 'edm', 'big room');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (25, 'edm', 'electro house');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (25, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (25, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (25, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (25, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (25, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (26, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (27, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (28, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (28, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (29, 'edm', 'big room');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (29, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (29, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (29, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (30, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (31, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (31, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (31, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (31, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (31, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (32, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (32, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (32, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (32, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (32, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (32, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (32, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (32, 'rock', 'permanent wave');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (33, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (34, 'edm', 'big room');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (34, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (34, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (34, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (34, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (34, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (34, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (34, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (35, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (35, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (35, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (35, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (35, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (35, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (35, 'rap', 'trap');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (36, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (36, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (36, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (36, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (36, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (36, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (36, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (36, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (37, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (37, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (37, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (37, 'rap', 'southern hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (38, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (38, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (38, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (39, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (40, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (41, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (42, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (42, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (43, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (43, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (44, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (44, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (44, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (45, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (45, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (45, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (46, 'pop', 'dance pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (46, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (47, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (47, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (48, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (48, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (49, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (50, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (50, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (50, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (50, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (50, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (50, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (51, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (52, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (53, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (53, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (54, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (55, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (55, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (56, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (57, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (57, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (57, 'rap', 'southern hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (57, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (58, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (58, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (58, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (58, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (59, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (59, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (60, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (61, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (61, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (62, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (63, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (63, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (64, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (65, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (66, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (66, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (67, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (67, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (68, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (69, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (70, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (71, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (71, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (72, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (73, 'pop', 'post-teen pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (74, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (74, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (75, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (75, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (75, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (75, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (76, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (76, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (77, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (78, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (79, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (80, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (81, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (82, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (83, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (84, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (85, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (85, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (85, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (86, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (87, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (88, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (89, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (90, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (91, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (91, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (91, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (92, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (92, 'rock', 'permanent wave');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (93, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (93, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (94, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (95, 'pop', 'electropop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (96, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (97, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (98, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (99, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (100, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (101, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (101, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (102, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (103, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (104, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (105, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (106, 'pop', 'indie poptimism');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (107, 'rap', 'hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (107, 'rap', 'southern hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (108, 'rap', 'hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (109, 'rap', 'hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (110, 'rap', 'southern hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (111, 'rap', 'southern hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (112, 'rap', 'southern hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (113, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (113, 'rap', 'southern hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (114, 'rap', 'gangster rap');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (115, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (115, 'rap', 'trap');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (116, 'rap', 'trap');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (117, 'rap', 'trap');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (118, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (118, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (118, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (119, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (120, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (121, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (122, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (122, 'rock', 'permanent wave');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (123, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (123, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (124, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (124, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (124, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (125, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (126, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (127, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (127, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (128, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (129, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (130, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (131, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (132, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (133, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (134, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (135, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (136, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (137, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (138, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (139, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (140, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (141, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (142, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (143, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (144, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (145, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (146, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (147, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (148, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (149, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (150, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (151, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (152, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (153, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (154, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (155, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (156, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (157, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (158, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (159, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (160, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (161, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (162, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (163, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (164, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (165, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (166, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (167, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (168, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (169, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (170, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (171, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (172, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (173, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (174, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (175, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (176, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (177, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (178, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (179, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (180, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (181, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (182, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (183, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (184, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (185, 'rock', 'album rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (186, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (187, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (188, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (189, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (190, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (190, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (191, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (192, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (193, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (193, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (194, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (195, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (196, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (196, 'rock', 'permanent wave');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (197, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (198, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (199, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (200, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (201, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (202, 'rock', 'classic rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (203, 'rock', 'permanent wave');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (204, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (205, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (206, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (207, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (208, 'rock', 'hard rock');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (209, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (210, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (211, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (211, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (212, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (213, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (214, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (214, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (215, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (216, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (217, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (217, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (218, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (218, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (219, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (220, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (221, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (222, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (223, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (223, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (224, 'latin', 'tropical');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (225, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (226, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (227, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (228, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (229, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (229, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (230, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (230, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (231, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (231, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (232, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (233, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (234, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (235, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (236, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (236, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (237, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (237, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (238, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (239, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (240, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (240, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (241, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (241, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (242, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (242, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (242, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (243, 'edm', 'pop edm');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (243, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (243, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (243, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (243, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (244, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (244, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (244, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (244, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (245, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (245, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (245, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (246, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (246, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (246, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (247, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (247, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (248, 'latin', 'latin pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (249, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (249, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (250, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (251, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (251, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (252, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (252, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (253, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (253, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (254, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (255, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (256, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (257, 'latin', 'reggaeton');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (258, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (259, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (260, 'latin', 'latin hip hop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (261, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (261, 'r&b', 'neo soul');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (261, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (262, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (263, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (264, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (265, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (266, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (267, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (268, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (269, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (270, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (271, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (272, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (273, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (274, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (275, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (276, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (277, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (278, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (279, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (280, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (281, 'r&b', 'urban contemporary');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (282, 'r&b', 'hip pop');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (283, 'r&b', 'new jack swing');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (284, 'r&b', 'new jack swing');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (285, 'r&b', 'new jack swing');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (286, 'r&b', 'new jack swing');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (287, 'r&b', 'new jack swing');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (288, 'r&b', 'new jack swing');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (289, 'r&b', 'new jack swing');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (290, 'edm', 'big room');
+INSERT INTO generos (cancion_id, genero, subgenero) VALUES (291, 'edm', 'pop edm');

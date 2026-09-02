@@ -10,7 +10,13 @@ submit50:
     - !require 6.sql
     - !require 7.sql
     - !require 8.sql
-    - !include answers.txt
+    - !require 9.sql
+    - !require 10.sql
+    - !require 11.sql
+    - !require 12.sql
+    - !require 13.sql
+    - !require 14.sql
+    - !require 15.sql
   style: false
 
 check50:
