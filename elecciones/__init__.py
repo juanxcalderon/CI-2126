@@ -1,29 +1,109 @@
+import re
+
 import check50
 import check50.c
 
 
-# ─────────────────────────────────────────────
-#  Helper
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────
+#  Helpers / Ayudantes
+#
+#  The program echoes every candidate name while asking for votes
+#  ("- Pedro: "), so a name showing up anywhere in the output proves
+#  nothing. We only judge what is printed AFTER the last prompt.
+#
+#  El programa repite el nombre de cada candidato al pedir los votos
+#  ("- Pedro: "), así que encontrar un nombre en la salida no prueba nada.
+#  Solo se juzga lo que se imprime DESPUÉS del último mensaje de captura.
+# ─────────────────────────────────────────────────────────────────────────
 
-def stdin_votos(votos_por_sector):
-    """
-    Construye la secuencia de stdin.
-    votos_por_sector: lista de 5 listas (profesores, estudiantes,
-    egresados, empleados, obreros); cada sublista tiene los votos
-    de cada candidato en ese sector, en el mismo orden en que
-    aparecen como argumentos de línea de comandos.
-    """
-    lines = []
-    for sector in votos_por_sector:
-        for v in sector:
-            lines.append(str(v))
-    return "\n".join(lines)
+SECTORES = ["profesores", "estudiantes", "egresados", "empleados", "obreros"]
 
 
-# ─────────────────────────────────────────────
-#  Existencia y compilación
-# ─────────────────────────────────────────────
+def entrada(votos_por_sector):
+    """Una línea por voto: sector por sector, candidato por candidato."""
+    return [str(v) for sector in votos_por_sector for v in sector]
+
+
+def correr(candidatos, votos_por_sector):
+    """Ejecuta el programa y devuelve (resultado_final, código_de_salida)."""
+    proceso = check50.run("./elecciones " + " ".join(candidatos))
+    for linea in entrada(votos_por_sector):
+        proceso.stdin(linea, prompt=False)
+    salida = proceso.stdout()
+    codigo = proceso.exitcode  # stdout() already waited for the program to end
+
+    # Everything after the last "- <last candidate>: " prompt is the verdict.
+    # Todo lo que sigue al último "- <último candidato>: " es el veredicto.
+    ultimo = f"- {candidatos[-1]}:"
+    corte = salida.rfind(ultimo)
+    if corte == -1:
+        raise check50.Failure(
+            "No se encontró la captura de votos del sector obrero. "
+            "¿Modificó los mensajes del main?"
+        )
+    return salida[corte + len(ultimo):], codigo
+
+
+def aparece(nombre, texto):
+    return re.search(rf"\b{re.escape(nombre)}\b", texto) is not None
+
+
+def esperar_ganador(candidatos, votos, ganador):
+    final, codigo = correr(candidatos, votos)
+    if not re.search(rf"Ganador:\s*{re.escape(ganador)}\b", final):
+        raise check50.Mismatch(f"Ganador: {ganador}", final.strip())
+    otros = [c for c in candidatos if c != ganador and aparece(c, final)]
+    if otros:
+        raise check50.Failure(
+            f"Solo debe anunciarse a {ganador}, pero también aparece: {', '.join(otros)}"
+        )
+    if codigo != 0:
+        raise check50.Failure(f"Se esperaba código de salida 0, se obtuvo {codigo}")
+
+
+def esperar_segunda_ronda(candidatos, votos, pasan):
+    final, codigo = correr(candidatos, votos)
+    if re.search(r"(?i)ganador\s*:", final):
+        raise check50.Failure(
+            "Nadie supera el 50 % de los votos ponderados, así que no debe "
+            f"declararse ganador. Salida: {final.strip()}"
+        )
+    faltan = [c for c in pasan if not aparece(c, final)]
+    if faltan:
+        raise check50.Failure(
+            f"Debían pasar a segunda ronda {', '.join(pasan)}, pero falta: {', '.join(faltan)}"
+        )
+    sobran = [c for c in candidatos if c not in pasan and aparece(c, final)]
+    if sobran:
+        raise check50.Failure(
+            f"{', '.join(sobran)} debía quedar eliminado y no mostrarse en la segunda ronda"
+        )
+    if codigo != 0:
+        raise check50.Failure(f"Se esperaba código de salida 0, se obtuvo {codigo}")
+
+
+def esperar_rechazo(voto_invalido):
+    # The first vote typed is the invalid one; main must stop with code 4.
+    # El primer voto es el inválido; el main debe terminar con código 4.
+    proceso = check50.run("./elecciones Pedro Maria")
+    proceso.stdin(voto_invalido, prompt=False)
+    proceso.stdin("100", prompt=False)
+    codigo = proceso.exit()
+    if codigo != 4:
+        raise check50.Failure(
+            f"El voto «{voto_invalido}» debía rechazarse (código 4), "
+            f"pero el programa terminó con código {codigo}"
+        )
+
+
+def iguales(votos_de_cada_candidato):
+    """Mismos votos en los cinco sectores."""
+    return [list(votos_de_cada_candidato) for _ in SECTORES]
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  Existencia y compilación / Existence and compilation
+# ─────────────────────────────────────────────────────────────────────────
 
 @check50.check()
 def exists():
@@ -37,232 +117,180 @@ def compiles():
     check50.c.compile("elecciones.c", exe_name="elecciones", lcs50=True)
 
 
-# ─────────────────────────────────────────────
-#  CP-1  Ganador claro en primera ronda — 3 candidatos
-#
-#  ./elecciones Pedro Enrique Maria
-#  Todos los sectores con Vv=1000 (mismos votos en los 5 sectores):
-#    Pedro=600, Enrique=200, Maria=200
-#  TVP: Pedro=64.25%, Enrique=17.875%, Maria=17.875%
-#  SALIDA ESPERADA: Ganador: Pedro
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────
+#  Casos promedio / Typical cases
+# ─────────────────────────────────────────────────────────────────────────
 
 @check50.check(compiles)
-def cp1_ganador_claro_primera_ronda():
-    """CP-1: ganador claro en primera ronda (Pedro, 64.25%)"""
-    stdin = stdin_votos([
-        [600, 200, 200],  # profesores  Vv=1000
-        [600, 200, 200],  # estudiantes Vv=1000
-        [600, 200, 200],  # egresados   Vv=1000
-        [600, 200, 200],  # empleados   Vv=1000
-        [600, 200, 200],  # obreros     Vv=1000
-    ])
-    check50.run("./elecciones Pedro Enrique Maria") \
-        .stdin(stdin) \
-        .stdout(r"(?i)Pedro", regex=True) \
-        .exit(0)
+def ejemplo_enunciado():
+    """ejemplo del enunciado: Pedro gana con 52,14 % aunque Enrique tiene más votos sin ponderar"""
+    # TVP: Pedro 52.1442 | Enrique 31.1738 | Maria 16.6820
+    # Votos brutos / raw votes: Pedro 4629 < Enrique 4635
+    esperar_ganador(["Pedro", "Enrique", "Maria"], [
+        [290, 104, 37],
+        [2356, 2012, 1009],
+        [1041, 2101, 1087],
+        [741, 214, 310],
+        [201, 204, 99],
+    ], "Pedro")
 
-
-# ─────────────────────────────────────────────
-#  CP-2  Segunda ronda — ejemplo del enunciado
-#
-#  ./elecciones Pedro Enrique Maria
-#  TVP: Pedro=42.98%, Enrique=24.50%, Maria=32.52%
-#  → nadie supera 50% → segunda ronda: Pedro y Maria
-# ─────────────────────────────────────────────
 
 @check50.check(compiles)
-def cp2_segunda_ronda_ejemplo_enunciado():
-    """CP-2: segunda ronda — ejemplo del enunciado (Pedro y Maria pasan)"""
-    stdin = stdin_votos([
-        [504, 159, 251],    # profesores  Vv=914
-        [1989, 793, 2114],  # estudiantes Vv=4896
-        [581, 1001, 1114],  # egresados   Vv=2696
-        [399, 215, 198],    # empleados   Vv=812
-        [123, 267, 171],    # obreros     Vv=561
-    ])
-    run = check50.run("./elecciones Pedro Enrique Maria")
-    output = run.stdin(stdin).stdout()
-    if "Pedro" not in output:
-        raise check50.Failure("Se esperaba que Pedro apareciera en la segunda ronda")
-    if "Maria" not in output:
-        raise check50.Failure("Se esperaba que Maria apareciera en la segunda ronda")
+def ejemplo_reglamento():
+    """ejemplo del Reglamento: nadie supera 50 %, pasan Pedro y Maria"""
+    # TVP: Pedro 43.05 | Enrique 24.55 | Maria 32.61 (tabla del Artículo 46)
+    esperar_segunda_ronda(["Pedro", "Enrique", "Maria"], [
+        [504, 159, 251],
+        [1989, 793, 2114],
+        [581, 1001, 1114],
+        [399, 215, 198],
+        [123, 267, 171],
+    ], ["Pedro", "Maria"])
 
-
-# ─────────────────────────────────────────────
-#  CP-4  Dos candidatos — uno gana directamente
-#
-#  ./elecciones Pedro Maria
-#  Todos los sectores: Pedro=600, Maria=400  → Vv=1000
-#  TVP: Pedro=60%, Maria=40%
-#  SALIDA ESPERADA: Ganador: Pedro
-# ─────────────────────────────────────────────
 
 @check50.check(compiles)
-def cp4_dos_candidatos_gana_directo():
-    """CP-4: dos candidatos, Pedro gana directamente (60%)"""
-    stdin = stdin_votos([
-        [600, 400],  # profesores
-        [600, 400],  # estudiantes
-        [600, 400],  # egresados
-        [600, 400],  # empleados
-        [600, 400],  # obreros
-    ])
-    check50.run("./elecciones Pedro Maria") \
-        .stdin(stdin) \
-        .stdout(r"(?i)Pedro", regex=True) \
-        .exit(0)
+def ganador_claro():
+    """ganador claro en primera ronda (Pedro, 60 %)"""
+    esperar_ganador(["Pedro", "Enrique", "Maria"], iguales([600, 200, 200]), "Pedro")
 
-
-# ─────────────────────────────────────────────
-#  CB-1  Empate en 2° lugar → los 3 pasan a 2ª ronda
-#
-#  ./elecciones Pedro Enrique Maria
-#  Todos los sectores: Pedro=400, Enrique=300, Maria=300  → Vv=1000
-#  TVP: Pedro=40%, Enrique=30%, Maria=30%
-#  Enrique y Maria empatados en 2° → los 3 pasan
-# ─────────────────────────────────────────────
 
 @check50.check(compiles)
-def cb1_empate_segundo_lugar_tres_pasan():
-    """CB-1: empate en 2° lugar → Pedro, Enrique y Maria pasan a segunda ronda"""
-    stdin = stdin_votos([
-        [400, 300, 300],  # profesores
-        [400, 300, 300],  # estudiantes
-        [400, 300, 300],  # egresados
-        [400, 300, 300],  # empleados
-        [400, 300, 300],  # obreros
-    ])
-    run = check50.run("./elecciones Pedro Enrique Maria")
-    output = run.stdin(stdin).stdout()
-    for nombre in ["Pedro", "Enrique", "Maria"]:
-        if nombre not in output:
-            raise check50.Failure(
-                f"Se esperaba que {nombre} apareciera (empate en 2° lugar)"
-            )
+def dos_candidatos():
+    """dos candidatos, Maria gana directamente (60 %)"""
+    esperar_ganador(["Pedro", "Maria"], iguales([400, 600]), "Maria")
 
-
-# ─────────────────────────────────────────────
-#  CB-2  Empate en 1° lugar → solo los dos primeros pasan
-#
-#  ./elecciones Pedro Enrique Maria
-#  Todos los sectores: Pedro=400, Enrique=400, Maria=200  → Vv=1000
-#  TVP: Pedro=40%, Enrique=40%, Maria=20%
-#  Pedro y Enrique empatados en 1° → pasan; Maria eliminada
-# ─────────────────────────────────────────────
 
 @check50.check(compiles)
-def cb2_empate_primer_lugar_dos_pasan():
-    """CB-2: empate en 1° lugar → Pedro y Enrique pasan, Maria eliminada"""
-    stdin = stdin_votos([
-        [400, 400, 200],  # profesores
-        [400, 400, 200],  # estudiantes
-        [400, 400, 200],  # egresados
-        [400, 400, 200],  # empleados
-        [400, 400, 200],  # obreros
-    ])
-    run = check50.run("./elecciones Pedro Enrique Maria")
-    output = run.stdin(stdin).stdout()
-    if "Pedro" not in output:
-        raise check50.Failure("Pedro (1° empatado) debería pasar a segunda ronda")
-    if "Enrique" not in output:
-        raise check50.Failure("Enrique (1° empatado) debería pasar a segunda ronda")
+def ponderacion_por_sector():
+    """pondera cada sector por separado y no suma votos brutos"""
+    # Pedro sweeps the small professor sector; Maria wins the four big ones.
+    # Raw votes favour Maria (5100 vs 2700) but the weighting gives Pedro 58.99 %.
+    # Pedro arrasa en el sector profesoral, pequeño; Maria gana los otros cuatro.
+    # Los votos brutos favorecen a Maria (5100 vs 2700), pero ponderado Pedro saca 58,99 %.
+    esperar_ganador(["Pedro", "Maria"], [
+        [300, 0],
+        [600, 1400],
+        [600, 1400],
+        [600, 1300],
+        [600, 1000],
+    ], "Pedro")
 
 
-# ─────────────────────────────────────────────
-#  CB-3  Empate total — nadie es eliminado
-#
-#  ./elecciones Pedro Enrique Maria
-#  Todos los sectores: Pedro=1000, Enrique=1000, Maria=1000  → Vv=3000
-#  TVP: Pedro=33.33%, Enrique=33.33%, Maria=33.33%
-#  Empate perfecto → ninguno eliminado, los 3 aparecen
-# ─────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────────────
+#  Casos borde / Edge cases
+# ─────────────────────────────────────────────────────────────────────────
 
 @check50.check(compiles)
-def cb3_empate_total_nadie_eliminado():
-    """CB-3: empate total → ninguno eliminado, los 3 aparecen en pantalla"""
-    stdin = stdin_votos([
-        [1000, 1000, 1000],  # profesores
-        [1000, 1000, 1000],  # estudiantes
-        [1000, 1000, 1000],  # egresados
-        [1000, 1000, 1000],  # empleados
-        [1000, 1000, 1000],  # obreros
-    ])
-    run = check50.run("./elecciones Pedro Enrique Maria")
-    output = run.stdin(stdin).stdout()
-    for nombre in ["Pedro", "Enrique", "Maria"]:
-        if nombre not in output:
-            raise check50.Failure(
-                f"Se esperaba que {nombre} apareciera (empate total, nadie eliminado)"
-            )
+def empate_segundo_lugar():
+    """empate en 2° lugar: Pedro, Enrique y Maria pasan a segunda ronda"""
+    esperar_segunda_ronda(["Pedro", "Enrique", "Maria"], iguales([400, 300, 300]),
+                          ["Pedro", "Enrique", "Maria"])
 
-
-# ─────────────────────────────────────────────
-#  CB-5  Gana por margen mínimo — 50.04% (1 voto de diferencia vs 50.00%)
-#
-#  ./elecciones Pedro Enrique Maria
-#  Profesores: Pedro=501, Enrique=250, Maria=249  → Vv=1000
-#  Demás sectores: Pedro=500, Enrique=250, Maria=250  → Vv=1000
-#  TVP: Pedro=50.04%, Enrique=25.00%, Maria=24.96%
-#  SALIDA ESPERADA: Ganador: Pedro  (50.04% > 50%)
-# ─────────────────────────────────────────────
 
 @check50.check(compiles)
-def cb5_gana_margen_minimo():
-    """CB-5: Pedro gana con 50.04% (un solo voto sobre el umbral)"""
-    stdin = stdin_votos([
-        [501, 250, 249],  # profesores  (1 voto extra a Pedro)
-        [500, 250, 250],  # estudiantes
-        [500, 250, 250],  # egresados
-        [500, 250, 250],  # empleados
-        [500, 250, 250],  # obreros
-    ])
-    check50.run("./elecciones Pedro Enrique Maria") \
-        .stdin(stdin) \
-        .stdout(r"(?i)Pedro", regex=True) \
-        .exit(0)
+def empate_primer_lugar():
+    """empate en 1° lugar: pasan Pedro y Enrique, Maria queda eliminada"""
+    esperar_segunda_ronda(["Pedro", "Enrique", "Maria"], iguales([400, 400, 200]),
+                          ["Pedro", "Enrique"])
 
-
-# ─────────────────────────────────────────────
-#  CB-6  Un único candidato — una sola vuelta (Art. 45, Parágrafo Segundo)
-#
-#  ./elecciones Pedro
-#  Profesores=800, Estudiantes=600, Egresados=450,
-#  Empleados=300, Obreros=200
-#  TVP: Pedro=100%
-#  SALIDA ESPERADA: Ganador: Pedro
-# ─────────────────────────────────────────────
 
 @check50.check(compiles)
-def cb6_candidato_unico_gana():
-    """CB-6: candidato único gana directamente (una sola vuelta)"""
-    stdin = stdin_votos([
-        [800],  # profesores
-        [600],  # estudiantes
-        [450],  # egresados
-        [300],  # empleados
-        [200],  # obreros
-    ])
-    check50.run("./elecciones Pedro") \
-        .stdin(stdin) \
-        .stdout(r"(?i)Pedro", regex=True) \
-        .exit(0)
+def empate_total():
+    """empate total: nadie es eliminado"""
+    esperar_segunda_ronda(["Pedro", "Enrique", "Maria"], iguales([1000, 1000, 1000]),
+                          ["Pedro", "Enrique", "Maria"])
 
-
-# ─────────────────────────────────────────────
-#  MAX_CANDIDATOS — 10 candidatos (límite máximo)
-#
-#  ./elecciones Alice Bob Carlos Diana Elena Frank Gaby Hugo Ivan Julio
-#  Todos los sectores: Alice=1000, resto=100  → Vv=1900
-#  TVP de Alice >> 50% → gana en primera ronda
-# ─────────────────────────────────────────────
 
 @check50.check(compiles)
-def max_candidatos():
+def cuatro_empate_segundo():
+    """cuatro candidatos con triple empate en 2° lugar: pasan los cuatro"""
+    esperar_segunda_ronda(["Pedro", "Enrique", "Maria", "Luis"], iguales([400, 200, 200, 200]),
+                          ["Pedro", "Enrique", "Maria", "Luis"])
+
+
+@check50.check(compiles)
+def cincuenta_exacto():
+    """50 % exacto no basta para ganar en primera vuelta"""
+    # Pedro 50.00 | Enrique 25.00 | Maria 25.00 → no winner; tie for 2nd.
+    esperar_segunda_ronda(["Pedro", "Enrique", "Maria"], iguales([500, 250, 250]),
+                          ["Pedro", "Enrique", "Maria"])
+
+
+@check50.check(compiles)
+def margen_minimo():
+    """Pedro gana con 50,04 % (los decimales no deben perderse)"""
+    # A program that keeps weighted votes as int truncates this to 49 and fails.
+    # Un programa que guarde los votos ponderados como int trunca esto a 49 y falla.
+    esperar_ganador(["Pedro", "Enrique", "Maria"], [
+        [501, 250, 249],
+        [500, 250, 250],
+        [500, 250, 250],
+        [500, 250, 250],
+        [500, 250, 250],
+    ], "Pedro")
+
+
+@check50.check(compiles)
+def candidato_unico():
+    """candidato único gana en una sola vuelta"""
+    esperar_ganador(["Pedro"], [[800], [600], [450], [300], [200]], "Pedro")
+
+
+@check50.check(compiles)
+def diez_candidatos():
     """soporta hasta MAX_CANDIDATOS (10) candidatos"""
-    sector = [1000] + [100] * 9  # A domina, los otros 9 con 100 c/u
-    stdin = stdin_votos([sector] * 5)
-    check50.run("./elecciones Alice Bob Carlos Diana Elena Frank Gaby Hugo Ivan Julio") \
-        .stdin(stdin) \
-        .stdout(r"(?i)Alice", regex=True) \
-        .exit(0)
+    nombres = ["Alicia", "Bruno", "Carlos", "Diana", "Elena",
+               "Felix", "Gaby", "Hugo", "Ivan", "Julio"]
+    esperar_segunda_ronda(nombres, iguales([10, 20, 30, 40, 50, 60, 70, 80, 90, 100]),
+                          ["Ivan", "Julio"])
+
+
+@check50.check(compiles)
+def limite_superior_valido():
+    """acepta 10000 votos (límite válido)"""
+    esperar_ganador(["Pedro", "Maria"], iguales([10000, 5000]), "Pedro")
+
+
+@check50.check(compiles)
+def sector_sin_votos():
+    """un sector sin votos aporta 0 % y la elección continúa (sin dividir entre cero)"""
+    # Nobody votes in the workers' sector: its 10 % is lost (Art. 42).
+    # Pedro gets 60 % of the remaining 90 % → 54 % and wins.
+    # Nadie vota en el sector obrero: su 10 % se pierde (Art. 42).
+    # Pedro saca el 60 % del 90 % restante → 54 % y gana.
+    esperar_ganador(["Pedro", "Maria"], [
+        [600, 400],
+        [600, 400],
+        [600, 400],
+        [600, 400],
+        [0, 0],
+    ], "Pedro")
+
+
+@check50.check(compiles)
+def ningun_voto():
+    """sin votos en ningún sector: empate total en 0 %, pasan todos"""
+    esperar_segunda_ronda(["Pedro", "Enrique", "Maria"], iguales([0, 0, 0]),
+                          ["Pedro", "Enrique", "Maria"])
+
+
+# ─────────────────────────────────────────────────────────────────────────
+#  Validación de entradas / Input validation
+# ─────────────────────────────────────────────────────────────────────────
+
+@check50.check(compiles)
+def rechaza_negativos():
+    """rechaza votos negativos"""
+    esperar_rechazo("-1")
+
+
+@check50.check(compiles)
+def rechaza_mayor_maximo():
+    """rechaza más de 10000 votos"""
+    esperar_rechazo("10001")
+
+
+@check50.check(compiles)
+def rechaza_letras():
+    """rechaza letras como votos"""
+    esperar_rechazo("abc")
