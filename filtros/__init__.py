@@ -4,24 +4,8 @@ import re
 
 SAMPLE_IMAGES = [
 
-    # 0
-    ["prueba con imagen de muestra 3x3 (niveles de posterización)",
-    "primera fila: (0, 0, 0), (64, 64, 64), (128, 128, 128)",
-    "segunda fila: (192, 0, 64), (0, 192, 128), (64, 0, 192)",
-    "tercera fila: (145, 73, 200), (32, 96, 160), (100, 170, 210)"],
-
-    # 1
-    ["prueba con imagen de muestra 3x3 (colores variados)",
-    "primera fila: (10, 20, 30), (40, 50, 60), (70, 80, 90)",
-    "segunda fila: (110, 130, 140), (120, 140, 150), (130, 150, 160)",
-    "tercera fila: (160, 170, 180), (180, 190, 200), (200, 210, 220)"],
-
-    # 2
-    ["prueba con imagen de muestra 4x4",
-    "primera fila: (10, 20, 30), (40, 50, 60), (70, 80, 90), (100, 110, 120)",
-    "segunda fila: (110, 130, 140), (120, 140, 150), (130, 150, 160), (140, 160, 170)",
-    "tercera fila: (150, 160, 170), (160, 170, 180), (180, 190, 200), (200, 210, 220)",
-    "cuarta fila: (50, 28, 90), (0, 0, 0), (192, 192, 192), (85, 85, 85)"],
+    # 0-2: sin uso (antes eran del posterize por niveles fijos)
+    [], [], [],
 
     # 3 - para grayscale/reflect/blur (imagen original con 255)
     ["prueba con imagen de muestra 3x3",
@@ -121,55 +105,102 @@ def grayscale4x4():
     ]))
 
 @check50.check(compiles)
-def posterize_single_pixel():
-    """Posterize filtra correctamente el píxel del ejemplo del enunciado."""
-    log(SAMPLE_PIXEL(145, 73, 200))
-    check50.run("./testing 1 0").stdout("128 64 192\n");
-    pass
+def posterize_ejemplo():
+    """Posterize: el píxel del ejemplo del enunciado queda (255, 150, 40)"""
+    log("probando con pixel (180, 120, 60)")
+    check50.run("./testing 1 0").stdout('255 150 40\n')
 
 @check50.check(compiles)
-def posterize_rounding_down():
-    """Posterize redondea correctamente hacia el nivel inferior."""
-    log(SAMPLE_PIXEL(20, 40, 90))
-    check50.run("./testing 1 1").stdout("0 64 64\n");
-    pass
+def posterize_gris():
+    """Posterize: un píxel gris queda en el nivel medio"""
+    log("probando con pixel (100, 100, 100)")
+    check50.run("./testing 1 1").stdout('150 150 150\n')
 
 @check50.check(compiles)
-def posterize_exact_level():
-    """Posterize deja solos los píxeles que ya están en un nivel exacto."""
-    log(SAMPLE_PIXEL(64, 128, 192))
-    check50.run("./testing 1 2").stdout("64 128 192\n");
-    pass
+def posterize_limite():
+    """Posterize: un valor avivado de 85 ya es nivel medio (150)"""
+    log("probando con pixel (85, 85, 85)")
+    check50.run("./testing 1 2").stdout('150 150 150\n')
 
 @check50.check(compiles)
-def posterize_multi():
-    """Posterize filtra correctamente una imagen 3x3 que demuestra todos los niveles."""
-    log(SAMPLE_IMAGES[0])
-    check50.run("./testing 1 3").stdout("".join([
-        "0 0 0\n", "64 64 64\n", "128 128 128\n",
-        "192 0 64\n", "0 192 128\n", "64 0 192\n",
-        "128 64 192\n", "0 128 128\n", "128 192 192\n"
-    ]))
+def posterize_blanco():
+    """Posterize: un píxel casi blanco queda blanco (sin desbordarse)"""
+    log("probando con pixel (250, 250, 250)")
+    check50.run("./testing 1 3").stdout('255 255 255\n')
 
 @check50.check(compiles)
-def posterize3x3():
-    """Posterize filtra correctamente imágenes 3x3 con colores variados."""
-    log(SAMPLE_IMAGES[1])
-    check50.run("./testing 1 4").stdout("".join([
-        "0 0 0\n", "64 64 64\n", "64 64 64\n",
-        "128 128 128\n", "128 128 128\n", "128 128 128\n",
-        "128 192 192\n", "192 192 192\n", "192 192 192\n"
-    ]))
+def posterize_avivado_negativo():
+    """Posterize: avivar puede dar valores negativos, que quedan en el nivel oscuro"""
+    log("probando con pixel (200, 30, 30)")
+    check50.run("./testing 1 4").stdout('255 40 40\n')
 
 @check50.check(compiles)
-def posterize4x4():
-    """Posterize filtra correctamente la imagen 4x4."""
-    log(SAMPLE_IMAGES[2])
+def posterize_mediana():
+    """Posterize: la mediana 5x5 borra un punto suelto"""
+    log("prueba con imagen 5x5 roja (200, 30, 30) con un punto azul (30, 30, 200) en el centro")
     check50.run("./testing 1 5").stdout("".join([
-        "0 0 0\n", "64 64 64\n", "64 64 64\n", "128 128 128\n",
-        "128 128 128\n", "128 128 128\n", "128 128 128\n", "128 128 192\n",
-        "128 128 192\n", "128 192 192\n", "192 192 192\n", "192 192 192\n",
-        "64 0 64\n", "0 0 0\n", "192 192 192\n", "64 64 64\n"
+        '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n',
+        '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n',
+        '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n',
+        '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n', '255 40 40\n',
+        '255 40 40\n'
+    ]))
+
+@check50.check(compiles)
+def posterize_contorno():
+    """Posterize: dibuja el contorno negro entre dos zonas de color"""
+    log("prueba con imagen 6x6: mitad izquierda (200, 30, 30), mitad derecha (30, 30, 200)")
+    check50.run("./testing 1 6").stdout("".join([
+        '255 40 40\n', '255 40 40\n', '0 0 0\n', '40 40 255\n', '40 40 255\n', '40 40 255\n',
+        '255 40 40\n', '255 40 40\n', '0 0 0\n', '40 40 255\n', '40 40 255\n', '40 40 255\n',
+        '255 40 40\n', '255 40 40\n', '0 0 0\n', '40 40 255\n', '40 40 255\n', '40 40 255\n',
+        '255 40 40\n', '255 40 40\n', '0 0 0\n', '40 40 255\n', '40 40 255\n', '40 40 255\n',
+        '255 40 40\n', '255 40 40\n', '0 0 0\n', '40 40 255\n', '40 40 255\n', '40 40 255\n',
+        '255 40 40\n', '255 40 40\n', '0 0 0\n', '40 40 255\n', '40 40 255\n', '40 40 255\n'
+    ]))
+
+@check50.check(compiles)
+def posterize_franjas():
+    """Posterize: filtra correctamente una imagen 5x7 con franjas de color"""
+    log("prueba con imagen 5x7 de franjas diagonales de siete colores")
+    check50.run("./testing 1 7").stdout("".join([
+        '150 255 40\n', '150 255 40\n', '150 255 40\n', '0 0 0\n', '255 255 40\n', '255 255 40\n',
+        '255 255 40\n', '150 255 40\n', '150 255 40\n', '150 255 40\n', '0 0 0\n', '255 255 40\n',
+        '255 255 40\n', '255 255 40\n', '0 0 0\n', '150 255 40\n', '150 255 40\n', '0 0 0\n',
+        '255 255 40\n', '255 255 40\n', '255 255 40\n', '0 0 0\n', '150 255 40\n', '150 255 40\n',
+        '0 0 0\n', '255 255 40\n', '255 255 40\n', '255 255 40\n', '0 0 0\n', '150 255 40\n',
+        '150 255 40\n', '0 0 0\n', '255 255 40\n', '255 255 40\n', '255 255 40\n'
+    ]))
+
+@check50.check(compiles)
+def posterize_diagonal():
+    """Posterize: filtra correctamente una imagen 6x6 dividida en diagonal"""
+    log("prueba con imagen 6x6: (250, 180, 30) sobre la diagonal y (40, 120, 60) debajo")
+    check50.run("./testing 1 8").stdout("".join([
+        '0 0 0\n', '0 0 0\n', '255 255 40\n', '255 255 40\n', '255 255 40\n', '255 255 40\n',
+        '40 150 40\n', '0 0 0\n', '0 0 0\n', '255 255 40\n', '255 255 40\n', '255 255 40\n',
+        '40 150 40\n', '40 150 40\n', '0 0 0\n', '0 0 0\n', '255 255 40\n', '255 255 40\n',
+        '40 150 40\n', '40 150 40\n', '40 150 40\n', '0 0 0\n', '0 0 0\n', '255 255 40\n',
+        '40 150 40\n', '40 150 40\n', '40 150 40\n', '40 150 40\n', '0 0 0\n', '0 0 0\n',
+        '40 150 40\n', '40 150 40\n', '40 150 40\n', '40 150 40\n', '40 150 40\n', '40 150 40\n'
+    ]))
+
+@check50.check(compiles)
+def posterize_cuadrantes():
+    """Posterize: filtra correctamente una imagen 8x8 con cuatro zonas y puntos sueltos"""
+    log("prueba con imagen 8x8 de cuatro cuadrantes de color con un píxel suelto en cada uno")
+    check50.run("./testing 1 9").stdout("".join([
+        '255 255 40\n', '255 255 40\n', '255 255 40\n', '0 0 0\n', '40 255 40\n', '40 255 40\n',
+        '40 255 40\n', '40 255 40\n', '255 255 40\n', '255 255 40\n', '255 255 40\n', '0 0 0\n',
+        '40 255 40\n', '40 255 40\n', '40 255 40\n', '40 255 40\n', '255 255 40\n', '255 255 40\n',
+        '255 255 40\n', '0 0 0\n', '40 255 40\n', '40 255 40\n', '40 255 40\n', '40 255 40\n',
+        '0 0 0\n', '0 0 0\n', '0 0 0\n', '0 0 0\n', '0 0 0\n', '0 0 0\n',
+        '0 0 0\n', '0 0 0\n', '0 0 0\n', '40 255 255\n', '40 255 255\n', '0 0 0\n',
+        '255 150 255\n', '255 150 255\n', '0 0 0\n', '0 0 0\n', '0 0 0\n', '40 255 255\n',
+        '40 255 255\n', '0 0 0\n', '255 150 255\n', '0 0 0\n', '255 255 255\n', '255 255 255\n',
+        '0 0 0\n', '0 0 0\n', '0 0 0\n', '0 0 0\n', '0 0 0\n', '255 255 255\n',
+        '255 255 255\n', '255 255 255\n', '40 150 255\n', '40 150 255\n', '0 0 0\n', '0 0 0\n',
+        '0 0 0\n', '255 255 255\n', '255 255 255\n', '255 255 255\n'
     ]))
 
 @check50.check(compiles)

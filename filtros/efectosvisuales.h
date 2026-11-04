@@ -11,6 +11,3 @@ void reflect(int height, int width, RGBTRIPLE image[height][width]);
 
 // Desenfoca una imagen BMP (Blur)
 void blur(int height, int width, RGBTRIPLE image[height][width]);
-
-// Convierte una imagen BMP a su negativo fotográfico
-void negative(int height, int width, RGBTRIPLE image[height][width]);

@@ -23,49 +23,6 @@ int main(int argc, char *argv[])
     int function = atoi(argv[1]);
     int test = atoi(argv[2]);
 
-    // Image with three rows demonstrating all four posterization levels
-    RGBTRIPLE img1[3][3];
-    img1[0][0] = pixel(0,   0,   0);
-    img1[0][1] = pixel(64,  64,  64);
-    img1[0][2] = pixel(128, 128, 128);
-    img1[1][0] = pixel(192, 0,   64);
-    img1[1][1] = pixel(0,   192, 128);
-    img1[1][2] = pixel(64,  0,   192);
-    img1[2][0] = pixel(145, 73,  200);
-    img1[2][1] = pixel(32,  96,  160);
-    img1[2][2] = pixel(100, 170, 210);
-
-    // Image with varying colors (safe range, no overflow)
-    RGBTRIPLE img2[3][3];
-    img2[0][0] = pixel(10,  20,  30);
-    img2[0][1] = pixel(40,  50,  60);
-    img2[0][2] = pixel(70,  80,  90);
-    img2[1][0] = pixel(110, 130, 140);
-    img2[1][1] = pixel(120, 140, 150);
-    img2[1][2] = pixel(130, 150, 160);
-    img2[2][0] = pixel(160, 170, 180);
-    img2[2][1] = pixel(180, 190, 200);
-    img2[2][2] = pixel(200, 210, 220);
-
-    // Larger image (safe range, no overflow)
-    RGBTRIPLE img3[4][4];
-    img3[0][0] = pixel(10,  20,  30);
-    img3[0][1] = pixel(40,  50,  60);
-    img3[0][2] = pixel(70,  80,  90);
-    img3[0][3] = pixel(100, 110, 120);
-    img3[1][0] = pixel(110, 130, 140);
-    img3[1][1] = pixel(120, 140, 150);
-    img3[1][2] = pixel(130, 150, 160);
-    img3[1][3] = pixel(140, 160, 170);
-    img3[2][0] = pixel(150, 160, 170);
-    img3[2][1] = pixel(160, 170, 180);
-    img3[2][2] = pixel(180, 190, 200);
-    img3[2][3] = pixel(200, 210, 220);
-    img3[3][0] = pixel(50,  28,  90);
-    img3[3][1] = pixel(0,   0,   0);
-    img3[3][2] = pixel(192, 192, 192);
-    img3[3][3] = pixel(85,  85,  85);
-
     // 1x2 row
     RGBTRIPLE row2[1][2];
     row2[0][0] = pixel(255, 0, 0);
@@ -230,54 +187,151 @@ int main(int argc, char *argv[])
     }
 
     else if (function == POSTERIZE) {
+        // Cartoon posterize: 5x5 median (x4), vivid colour, 3 levels, black outlines.
+        // Posterize caricatura: mediana 5x5 (x4), color avivado, 3 niveles, contornos negros.
         switch (test)
         {
             case 0:
             {
-                // Pixel del ejemplo del enunciado: (145, 73, 200) -> (128, 64, 192)
+                // Ejemplo del enunciado: (180, 120, 60) -> (255, 150, 40)
                 RGBTRIPLE img[1][1];
-                img[0][0] = pixel(145, 73, 200);
+                img[0][0] = pixel(180, 120, 60);
                 posterize(1, 1, img);
                 print_image(1, 1, img);
                 break;
             }
             case 1:
             {
-                // Pixel que redondea hacia abajo: (20, 40, 90) -> (0, 64, 64)
+                // Un gris se queda gris: (100, 100, 100) -> (150, 150, 150)
                 RGBTRIPLE img[1][1];
-                img[0][0] = pixel(20, 40, 90);
+                img[0][0] = pixel(100, 100, 100);
                 posterize(1, 1, img);
                 print_image(1, 1, img);
                 break;
             }
             case 2:
             {
-                // Pixel ya en un nivel exacto: (64, 128, 192) -> (64, 128, 192)
+                // Justo en el límite: 85 ya es nivel medio -> (150, 150, 150)
                 RGBTRIPLE img[1][1];
-                img[0][0] = pixel(64, 128, 192);
+                img[0][0] = pixel(85, 85, 85);
                 posterize(1, 1, img);
                 print_image(1, 1, img);
                 break;
             }
             case 3:
             {
-                // Imagen 3x3 que demuestra todos los niveles
-                posterize(3, 3, img1);
-                print_image(3, 3, img1);
+                // Casi blanco: no se desborda -> (255, 255, 255)
+                RGBTRIPLE img[1][1];
+                img[0][0] = pixel(250, 250, 250);
+                posterize(1, 1, img);
+                print_image(1, 1, img);
                 break;
             }
             case 4:
             {
-                // Imagen 3x3 con colores variados (rango seguro)
-                posterize(3, 3, img2);
-                print_image(3, 3, img2);
+                // Rojo apagado: avivado queda negativo en verde y azul -> (255, 40, 40)
+                RGBTRIPLE img[1][1];
+                img[0][0] = pixel(200, 30, 30);
+                posterize(1, 1, img);
+                print_image(1, 1, img);
                 break;
             }
             case 5:
             {
-                // Imagen 4x4
-                posterize(4, 4, img3);
-                print_image(4, 4, img3);
+                // 5x5 rojo con un punto azul en el centro: la mediana borra el punto
+                RGBTRIPLE img[5][5];
+                for (int i = 0; i < 5; i++)
+                {
+                    for (int j = 0; j < 5; j++)
+                    {
+                        img[i][j] = pixel(200, 30, 30);
+                    }
+                }
+                img[2][2] = pixel(30, 30, 200);
+                posterize(5, 5, img);
+                print_image(5, 5, img);
+                break;
+            }
+            case 6:
+            {
+                // 6x6 mitad roja, mitad azul: debe aparecer un contorno negro entre ambas
+                RGBTRIPLE img[6][6];
+                for (int i = 0; i < 6; i++)
+                {
+                    for (int j = 0; j < 6; j++)
+                    {
+                        img[i][j] = j < 3 ? pixel(200, 30, 30) : pixel(30, 30, 200);
+                    }
+                }
+                posterize(6, 6, img);
+                print_image(6, 6, img);
+                break;
+            }
+            case 7:
+            {
+                // 5x7 con franjas de color: prueba el vecindario 5x5 cerca de los bordes
+                RGBTRIPLE img[5][7];
+                int r[7] = {230, 210, 40, 30, 120, 250, 90};
+                int g[7] = {40, 190, 200, 90, 40, 160, 220};
+                int b[7] = {50, 30, 60, 220, 180, 20, 210};
+                for (int i = 0; i < 5; i++)
+                {
+                    for (int j = 0; j < 7; j++)
+                    {
+                        img[i][j] = pixel(r[(i + j) % 7], g[(i + j) % 7], b[(i + j) % 7]);
+                    }
+                }
+                posterize(5, 7, img);
+                print_image(5, 7, img);
+                break;
+            }
+            case 8:
+            {
+                // 6x6 en diagonal: dos colores separados por una escalera
+                RGBTRIPLE img[6][6];
+                for (int i = 0; i < 6; i++)
+                {
+                    for (int j = 0; j < 6; j++)
+                    {
+                        img[i][j] = j > i ? pixel(250, 180, 30) : pixel(40, 120, 60);
+                    }
+                }
+                posterize(6, 6, img);
+                print_image(6, 6, img);
+                break;
+            }
+            case 9:
+            {
+                // 8x8 con cuatro cuadrantes de color y un píxel suelto en cada uno
+                RGBTRIPLE img[8][8];
+                for (int i = 0; i < 8; i++)
+                {
+                    for (int j = 0; j < 8; j++)
+                    {
+                        if (i < 4 && j < 4)
+                        {
+                            img[i][j] = pixel(220, 200, 40);
+                        }
+                        else if (i < 4)
+                        {
+                            img[i][j] = pixel(60, 170, 70);
+                        }
+                        else if (j < 4)
+                        {
+                            img[i][j] = pixel(90, 140, 230);
+                        }
+                        else
+                        {
+                            img[i][j] = pixel(240, 240, 235);
+                        }
+                    }
+                }
+                img[1][1] = pixel(10, 10, 10);
+                img[1][6] = pixel(250, 0, 250);
+                img[6][1] = pixel(0, 0, 0);
+                img[6][6] = pixel(255, 0, 0);
+                posterize(8, 8, img);
+                print_image(8, 8, img);
                 break;
             }
         }
