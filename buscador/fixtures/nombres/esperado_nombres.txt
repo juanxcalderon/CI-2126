@@ -1,0 +1,8 @@
+RESULTADOS
+
+plaza: 007.txt A-League 2011-12.txt Zona Monumental.txt acta 10.txt acta 2.txt doc_01.txt
+iglesia: Zona Monumental.txt doc_01.txt
+mercado: acta 10.txt
+
+PALABRAS INDEXADAS:                 3
+CONSULTAS PROCESADAS:               3

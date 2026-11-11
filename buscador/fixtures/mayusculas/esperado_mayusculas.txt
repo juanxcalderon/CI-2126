@@ -1,7 +1,7 @@
 RESULTADOS
 
 hash: alfa.txt zeta.txt
-memoria: alfa.txt zeta.txt
+memoria: Beta.txt alfa.txt zeta.txt
 listas: medio.txt
 inexistente:
 

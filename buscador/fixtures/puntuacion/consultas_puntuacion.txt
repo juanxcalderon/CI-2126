@@ -3,3 +3,8 @@ memoria
 tabla
 punteros
 estructura
+lista
+enlazada
+nodo
+c
+tablahash

@@ -1,6 +1,8 @@
-check50: juanxcalderon/CI-2126/2026/abr-jul/buscador
+check50:
+  files: &check50_files
+    - !exclude "*"
+    - !require indice.c
+    - !require indice.h
 
 submit50:
-  scope:
-    - indice.c
-    - indice.h
+  files: *check50_files

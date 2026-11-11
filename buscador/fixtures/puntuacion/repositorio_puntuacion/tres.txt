@@ -1,0 +1,1 @@
+Unicamente punteros. tabla-hash, lista_enlazada y nodo2nodo; 2026 C99

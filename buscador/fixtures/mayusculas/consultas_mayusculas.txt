@@ -1,4 +1,4 @@
 HASH
 memoria
-listas
+Listas
 inexistente

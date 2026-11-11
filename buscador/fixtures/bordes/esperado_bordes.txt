@@ -1,0 +1,10 @@
+RESULTADOS
+
+palabra: sin_salto.txt windows.txt
+ultima: sin_salto.txt
+linea: windows.txt
+dos: windows.txt
+nada:
+
+PALABRAS INDEXADAS:                 5
+CONSULTAS PROCESADAS:               5

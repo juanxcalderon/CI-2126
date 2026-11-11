@@ -1,0 +1,9 @@
+RESULTADOS
+
+corta: largas.txt
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaz: largas.txt
+bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb:
+final: largas.txt otra.txt
+
+PALABRAS INDEXADAS:                 3
+CONSULTAS PROCESADAS:               4

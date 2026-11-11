@@ -1,0 +1,18 @@
+RESULTADOS
+
+canción: avila.txt orinoco.txt
+cancion: llano.txt
+montaña: avila.txt
+montana: llano.txt
+árbol: avila.txt
+arbol: llano.txt
+qué: avila.txt
+que:
+niño: orinoco.txt
+ñandú: orinoco.txt
+pingüino: orinoco.txt
+año: orinoco.txt
+ano:
+
+PALABRAS INDEXADAS:                 26
+CONSULTAS PROCESADAS:               13

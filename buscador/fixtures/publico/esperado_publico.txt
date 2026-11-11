@@ -6,5 +6,5 @@ tabla: algoritmos.txt estructuras.txt punteros.txt
 punteros: punteros.txt
 recursion:
 
-PALABRAS INDEXADAS:                 18
+PALABRAS INDEXADAS:                 26
 CONSULTAS PROCESADAS:               5

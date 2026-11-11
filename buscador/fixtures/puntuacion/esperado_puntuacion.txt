@@ -1,0 +1,15 @@
+RESULTADOS
+
+hash: dos.txt tres.txt uno.txt
+memoria: dos.txt uno.txt
+tabla: dos.txt tres.txt uno.txt
+punteros: tres.txt
+estructura: uno.txt
+lista: tres.txt
+enlazada: tres.txt
+nodo: tres.txt
+c: tres.txt
+tablahash:
+
+PALABRAS INDEXADAS:                 12
+CONSULTAS PROCESADAS:               10
